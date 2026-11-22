@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Quản Lý Hội Viên - GYM-X CRM{% endblock title %}
+
+{% block extra_css %}
+<style>
+    /* 1. Style cơ bản */
+    .member-content-area {
+        flex-grow: 1;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+    }
+
+    /* Style cho Tiêu đề chính */
+    .manager-header h1 {
+        font-size: 3rem;
+        color: #c11325;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .search-group {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+    .search-group input {
+        width: 300px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+    .search-group button {
+        background-color: #c11325;
+        color: white;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 4px;
+        margin-left: 10px;
+        font-weight: 600;
+    }
+
+    /* 2. Style Bảng (6 CỘT) */
+    .member-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        text-align: center; /* Căn giữa nội dung bảng */
+    }
+    .member-table th, .member-table td {
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        font-family: 'Open Sans', sans-serif;
+        color: #000;
+        vertical-align: middle;
+    }
+    .member-table thead th {
+        background-color: #c11325; /* Tiêu đề ĐỎ */
+        color: white;
+        text-transform: uppercase;
+        font-weight: 700;
+        font-size: 0.95rem;
+    }
+    .member-table tbody tr {
+        background-color: #f8f8f8; /* Nền xám nhạt */
+    }
+
+    /* 3. Style cho Nút hành động */
+    .action-cell {
+        display: flex;
+        gap: 5px;
+        justify-content: center; /* Căn giữa nhóm nút trong ô */
+        align-items: center;
+    }
+    .btn-action-black {
+        background-color: black;
+        color: white;
+        padding: 5px 8px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        white-space: nowrap; /* Ngăn chữ xuống dòng */
+    }
+    .btn-action-red {
+        background-color: #c11325;
+        color: white;
+        padding: 5px 8px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        border: none;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="container" style="padding-top: 100px; padding-bottom: 50px;">
+    <div class="manager-header">
+        <h1 class="manager-header h1">DANH SÁCH HỘI VIÊN</h1>
+    </div>
+
+    <div class="member-content-area">
+        <form method="GET" class="search-group">
+            <input type="text" placeholder="Tên/Mã gói tập/CCCD" name="search" value="{{ search_query }}">
+            <button type="submit">Tìm kiếm</button>
+        </form>
+
+        <table class="member-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Mã Hội viên</th>
+                    <th>Tên khách hàng</th>
+                    <th>Gói tập đăng ký</th>
+                    <th>Ngày hết hạn</th> <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for member in members %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ member.membership_card_id }}</td>
+                    <td>{{ member.full_name }}</td>
+                    <td>{{ member.package.name|upper }}</td>
+                    <td>{{ member.end_date|date:"d/m/Y" }}</td> <td class="action-cell">
+                        <a href="{% url 'member_detail_view' member_card_id=member.membership_card_id %}" class="btn-action-black">Xem chi tiết</a>
+
+                        <form method="POST" action="#" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa hội viên {{ member.full_name }}?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-action-red">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="6" class="text-center">Chưa có hội viên nào đăng ký gói tập.</td></tr> {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock content %}

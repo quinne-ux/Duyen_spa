@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Đăng Ký Gói {{ package.name }} - GymX Fitness Club{% endblock title %}
+
+{% block content %}
+<section class="contact" style="padding-top: 100px; padding-bottom: 80px;">
+    <div class="container">
+        <div class="content" style="justify-content: center;">
+            <div class="box form wow slideInLeft" style="flex: 0 0 60%; max-width: 60%; background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+
+                <h2 class="text-center" style="color: #c11325; margin-bottom: 30px; font-weight: 700;">ĐĂNG KÝ GÓI HỘI VIÊN</h2>
+
+                <div class="package-info text-center" style="margin-bottom: 30px; border-bottom: 2px solid #eee; padding-bottom: 20px;">
+                    <h3 style="color: #222;">Gói đăng ký: <span style="color: #c11325;">{{ package.name|upper }}</span></h3>
+                    <p style="color: #555; font-family: 'Open Sans', sans-serif;">Giá: {{ package.get_price_display }} | Hạn sử dụng: {{ package.duration_months }} tháng</p>
+                </div>
+
+               <form method="POST">
+                   {% csrf_token %}
+
+                   <h4 style="color: #222; margin-bottom: 15px; font-weight: 600;">Thông tin khách hàng</h4>
+
+                   <div class="form-group" style="margin-bottom: 20px;">
+                       <label for="id_full_name" style="color: #333; font-weight: 600; display: block; margin-bottom: 5px;">Họ và tên:</label>
+                       <input type="text" id="id_full_name" name="full_name" required
+                              value="{{ user_name }}"
+                              class="form-control" style="border: 1px solid #ccc; color: #333;">
+                   </div>
+
+                   <div class="form-group" style="margin-bottom: 20px;">
+                       <label for="id_cccd" style="color: #333; font-weight: 600; display: block; margin-bottom: 5px;">CCCD:</label>
+                       <input type="text" id="id_cccd" name="cccd" required
+                              value="{{ cccd|default:'' }}"
+                              class="form-control" style="border: 1px solid #ccc; color: #333;">
+                   </div>
+
+                   <div class="form-group" style="margin-bottom: 20px;">
+                       <label for="id_phone" style="color: #333; font-weight: 600; display: block; margin-bottom: 5px;">Số điện thoại:</label>
+                       <input type="text" id="id_phone" name="phone_number" required
+                              value="{{ request.user.phone_number|default:'' }}"
+                              class="form-control" style="border: 1px solid #ccc; color: #333;">
+                   </div>
+
+                   <div class="form-group" style="margin-bottom: 20px;">
+                       <label for="id_package" style="color: #333; font-weight: 600; display: block; margin-bottom: 5px;">Gói tập:</label>
+                       <input type="text" id="id_package" value="{{ package.name|upper }}"
+                              class="form-control" disabled style="background-color: #f0f0f0; border: 1px solid #ccc; color: #333; font-weight: 700;">
+                   </div>
+
+                   <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                        <a href="{% url 'package_list' %}" class="btn" style="background-color: #888; color: #fff; padding: 10px 30px; border-radius: 5px; text-transform: uppercase;">Hủy</a>
+                        <button type="submit" style="background-color: #c11325; color: #fff; padding: 10px 30px; border-radius: 5px; text-transform: uppercase; border: none;">Đăng ký</button>
+                   </div>
+               </form>
+            </div>
+        </div>
+     </div>
+</section>
+{% endblock content %}

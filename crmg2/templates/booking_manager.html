@@ -1,0 +1,234 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Quản Lý Lịch Tập Thử - GYM-X CRM{% endblock title %}
+
+{% block extra_css %}
+<style>
+    /* 1. Style Bảng Quản lý */
+    .manager-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        text-align: left;
+    }
+    .manager-table th, .manager-table td {
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        font-family: 'Open Sans', sans-serif;
+        color: #000;
+        vertical-align: middle;
+    }
+    .manager-table thead th {
+        background-color: #c11325; /* Tiêu đề ĐỎ */
+        color: white;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    .manager-table tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
+
+    /* 2. Style cho khu vực nội dung (thay thế .content-area cũ) */
+    .manager-content-box {
+        background-color: #ffffff;
+        padding: 0 20px 20px 20px; /* Sửa ở đây */
+        border-radius: 8px;
+    }
+
+    /* 3. Style Trạng thái */
+    .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+    .status-pending { background-color: #FFC107; color: #333;}
+    .status-confirmed { background-color: #0d6efd; }
+    .status-completed { background-color: #198754; }
+    .status-cancelled { background-color: #dc3545; }
+
+    /* 4. Style cho Nút Xóa */
+    .btn-action-red {
+        background-color: #c11325;
+        color: white;
+        padding: 5px 8px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        border: none;
+        cursor: pointer;
+    }
+
+    /* 5. Style cho Form Cập nhật */
+    .btn-action-update {
+        background-color: #000000;
+        color: white;
+        padding: 5px 8px;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        border: none;
+        cursor: pointer;
+    }
+    .form-select-sm {
+        padding: 5px 8px;
+        font-size: 0.85rem;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        max-width: 130px;
+    }
+
+    /* 6. Style cho Bộ lọc và Tìm kiếm */
+    .filter-section {
+        padding: 0; /* Sửa ở đây */
+        margin-top: 20px; /* Thêm dòng này */
+        margin-bottom: 20px;
+    }
+    .filter-bar-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 15px;
+        gap: 10px;
+    }
+    .filter-bar-group input, .filter-bar-group select {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-family: 'Open Sans', sans-serif;
+    }
+    .filter-bar-group button {
+        padding: 8px 15px;
+        background-color: #c11325;
+        color: white;
+        border: none;
+        cursor: pointer;
+        font-weight: 600;
+        text-transform: uppercase;
+        border-radius: 4px;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="container" style="padding-top: 100px; padding-bottom: 50px;">
+
+    <h1 class="text-center" style="font-size: 3rem; color: #c11325; font-weight: 700; margin-bottom: 30px;">
+    QUẢN LÝ DANH SÁCH LỊCH TẬP THỬ
+    </h1>
+
+    <div class="manager-content-box" style="background-color: #ffffff;">
+
+        <form method="GET">
+            <div class="filter-section">
+                <div class="filter-bar-group">
+                    <input type="text" name="search" placeholder="Nhập tên hoặc SĐT" value="{{ search_query }}" style="width: 250px;">
+                    <button type="submit">Tìm kiếm</button>
+                </div>
+
+                <div class="filter-bar-group">
+                    <span style="margin-left: 20px; margin-right: 10px;">Trạng thái:</span>
+                    <select name="status">
+                        <option value="Tất cả" {% if selected_status == 'Tất cả' %}selected{% endif %}>Tất cả</option>
+                        {% for key, value in STATUS_CHOICES %}
+                            <option value="{{ key }}" {% if selected_status == key %}selected{% endif %}>{{ value }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <button type="submit">LỌC</button>
+                    <a href="{% url 'booking_manager_view' %}" style="text-decoration: none; color: #c11325; padding: 8px; font-weight: 600;">Reset</a>
+                </div>
+            </div>
+        </form>
+
+        {% if bookings %}
+        <table class="manager-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Tên Khách Hàng</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Dịch Vụ</th>
+                    <th>Ngày và giờ hẹn</th>
+                    <th>Ngày ĐK</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ booking.full_name }}</td>
+                    <td>
+    {{ booking.phone }}
+
+    <br>
+
+    <small>{{ booking.email }}</small>
+
+    {% if booking.notes %}
+        <br>
+        <small>Ghi chú: {{ booking.notes }}</small>
+    {% endif %}
+</td>
+                    <td>{{ booking.service }}</td>
+                    <td>
+    {{ booking.register_date|date:"d/m/Y" }}
+
+    <br>
+
+    <strong>
+        {{ booking.appointment_time|time:"H:i" }}
+    </strong>
+</td>
+                    <td>{{ booking.created_at|date:"d/m/Y" }}
+                    <br>
+
+<small style="color: #17452e; font-weight: 600;">
+
+    <i class="fa fa-users"></i>
+
+    {{ booking.party_size }} người
+
+</small></td>
+
+                    <td>
+                        <form method="POST" action="{% url 'update_booking_status' booking.pk %}" style="display: flex; gap: 5px; justify-content: center;">
+                            {% csrf_token %}
+
+                            <select name="new_status" class="form-select-sm">
+                                {% for key, value in STATUS_CHOICES %}
+                                    <option value="{{ key }}" {% if booking.status == key %}selected{% endif %}>
+                                        {{ value }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+
+                            <button type="submit" class="btn-action-update">Lưu</button>
+                        </form>
+                    </td>
+
+                    <td style="text-align: center;">
+                        <form method="POST" action="{% url 'delete_booking' booking.pk %}" style="display:inline;"
+                              onsubmit="return confirm('Bạn có chắc chắn muốn XÓA lịch hẹn của {{ booking.full_name }} ({{ booking.phone }})?');">
+                            {% csrf_token %}
+                            <button type="submit" class="btn-action-red">Xóa</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="margin-top: 20px; text-align: center;">Không có lịch hẹn nào phù hợp với tiêu chí lọc.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}

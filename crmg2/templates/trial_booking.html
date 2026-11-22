@@ -1,0 +1,2511 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Đặt lịch | Duyên Spa{% endblock title %}
+
+{% block body_class %}ds-inner-page ds-booking-page{% endblock body_class %}
+
+{% block legacy_css %}{% endblock legacy_css %}
+{% block legacy_js %}{% endblock legacy_js %}
+
+{% block extra_css %}
+
+<style>
+
+/* =================================
+   GIAO DIỆN CHUNG
+================================= */
+
+body.ds-booking-page {
+    margin: 0;
+    background: #faf7ef;
+    color: #17452e;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+}
+
+.ds-booking-page .ds-main {
+    padding-top: var(--ds-head, 76px);
+}
+
+.bk-wrap {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 35px;
+}
+
+.bk-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 400;
+    color: #17452e;
+}
+
+.bk-muted {
+    color: #69746a;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
+/* =================================
+   BANNER ĐẶT LỊCH
+================================= */
+
+.bk-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background: #efe6d7;
+    min-height: 230px;
+    display: flex;
+    align-items: center;
+}
+
+.bk-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 40%;
+    z-index: -2;
+    background:
+        url("{% static 'images/duyen-banner.jpg' %}")
+        center / cover no-repeat;
+}
+
+.bk-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+        90deg,
+        #f4ecdf 0%,
+        #f4ecdf 35%,
+        #f4ecdfeb 43%,
+        #f4ecdf45 65%,
+        transparent 90%
+    );
+}
+
+.bk-hero-content {
+    padding-top: 40px;
+    padding-bottom: 40px;
+}
+
+.bk-eyebrow {
+    display: block;
+    color: #658169;
+    font-size: 11px;
+    letter-spacing: 4px;
+    font-weight: 700;
+    margin-bottom: 14px;
+}
+
+.bk-hero h1 {
+    font-size: clamp(36px, 4vw, 54px);
+    font-style: italic;
+    margin: 0 0 14px;
+}
+
+.bk-hero p {
+    max-width: 460px;
+    margin: 0;
+}
+
+/* =================================
+   THANH TIẾN TRÌNH 3 BƯỚC
+================================= */
+
+.bk-progress {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    padding: 30px 0;
+}
+
+.bk-progress-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #829182;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.bk-progress-number {
+    width: 36px;
+    height: 36px;
+    border: 1px solid #b1bfae;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.bk-progress-item.active,
+.bk-progress-item.done {
+    color: #17452e;
+    font-weight: 600;
+}
+
+.bk-progress-item.active .bk-progress-number,
+.bk-progress-item.done .bk-progress-number {
+    background: #17452e;
+    border-color: #17452e;
+    color: white;
+}
+
+.bk-progress-line {
+    width: 55px;
+    height: 1px;
+    background: #cbd4c7;
+}
+
+/* =================================
+   BỐ CỤC ĐẶT LỊCH
+================================= */
+
+.bk-layout {
+    display: grid;
+    grid-template-columns: 30% minmax(0, 1fr);
+    align-items: start;
+    gap: 30px;
+    padding-bottom: 60px;
+}
+
+.bk-sidebar-image {
+    border-radius: 20px;
+    overflow: hidden;
+    height: 490px;
+    background: #e8dfd1;
+}
+
+.bk-sidebar-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.bk-sidebar-note {
+    text-align: center;
+    margin-top: 20px;
+    padding: 15px;
+}
+
+.bk-sidebar-note h3 {
+    font-size: 24px;
+    margin-bottom: 12px;
+}
+
+.bk-form-card {
+    background: #fffdf8;
+    border: 1px solid #e6e1d7;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px #17452e08;
+}
+
+.bk-step[hidden],
+.bk-actions button[hidden],
+.bk-alert[hidden] {
+    display: none !important;
+}
+
+.bk-step-heading {
+    font-family: Georgia, serif;
+    font-size: 29px;
+    font-weight: 400;
+    color: #17452e;
+    margin: 0 0 24px;
+}
+
+/* =================================
+   TRƯỜNG NHẬP THÔNG TIN
+================================= */
+
+.bk-field {
+    margin-bottom: 25px;
+}
+
+.bk-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #17452e;
+    margin-bottom: 11px;
+}
+
+.bk-required {
+    color: #b64848;
+}
+
+.bk-input {
+    width: 100%;
+    min-height: 48px;
+    background: #fffdf8;
+    color: #17452e;
+    border: 1px solid #cbd5c7;
+    border-radius: 9px;
+    padding: 12px 15px;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+.bk-input:focus {
+    outline: none;
+    border-color: #17452e;
+    box-shadow: 0 0 0 3px #17452e12;
+}
+
+.bk-input::placeholder {
+    color: #9b9e95;
+}
+
+textarea.bk-input {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* =================================
+   CHỌN DỊCH VỤ
+================================= */
+
+.bk-service-choice {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    align-items: center;
+    gap: 18px;
+    padding: 12px;
+    border: 1px solid #cbd5c7;
+    border-radius: 12px;
+    background: #faf7ef;
+}
+
+.bk-service-choice img {
+    width: 110px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 9px;
+}
+
+.bk-service-select {
+    width: 100%;
+    padding: 10px 5px;
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 15px;
+    border: none;
+    background: transparent;
+    color: #17452e;
+    cursor: pointer;
+}
+
+.bk-service-select:focus {
+    outline: 1px solid #78917a;
+}
+
+.bk-service-price {
+    font-size: 13px;
+    color: #69746a;
+    margin: 5px;
+}
+
+/* =================================
+   CHỌN KHUNG GIỜ
+================================= */
+
+.bk-hours {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.bk-hour {
+    padding: 13px 6px;
+    background: transparent;
+    color: #17452e;
+    border: 1px solid #cbd5c7;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.bk-hour:not(:disabled):hover {
+    background: #e8eee3;
+}
+
+.bk-hour.selected,
+.bk-hour.selected:hover {
+    background: #17452e;
+    color: #ffffff;
+    border-color: #17452e;
+}
+
+.bk-hour:disabled {
+    background: #efefeb;
+    color: #aaa;
+    border-color: #e5e5e0;
+    cursor: not-allowed;
+    text-decoration: line-through;
+}
+
+.bk-slot-note {
+    font-size: 12px;
+    margin: 14px 0 0;
+    color: #69746a;
+}
+
+.bk-refresh {
+    border: none;
+    background: transparent;
+    color: #17452e;
+    font: inherit;
+    font-size: 12px;
+    text-decoration: underline;
+    padding: 0;
+    margin-top: 8px;
+    cursor: pointer;
+}
+
+/* =================================
+   THÔNG TIN LIÊN HỆ
+================================= */
+
+.bk-consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
+    line-height: 1.7;
+    color: #536b57;
+}
+
+.bk-consent input {
+    width: 17px;
+    height: 17px;
+    accent-color: #17452e;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+/* =================================
+   XÁC NHẬN ĐẶT LỊCH
+================================= */
+
+.bk-summary {
+    background: #faf7ef;
+    border: 1px solid #e2e4d9;
+    border-radius: 14px;
+    padding: 20px;
+}
+
+.bk-summary-service {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #e1e4db;
+}
+
+.bk-summary-service img {
+    width: 105px;
+    height: 85px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.bk-summary-service h3 {
+    font-size: 19px;
+    color: #17452e;
+    margin: 0 0 8px;
+}
+
+.bk-summary-row {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid #e1e4db;
+    font-size: 13px;
+}
+
+.bk-summary-row span {
+    color: #69746a;
+}
+
+.bk-summary-row strong {
+    text-align: right;
+    color: #17452e;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+}
+
+.bk-summary-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding-top: 20px;
+}
+
+.bk-summary-total strong {
+    color: #17452e;
+    font-size: 23px;
+}
+
+.bk-alert {
+    margin: 18px 0;
+    padding: 12px 15px;
+    background: #f9ece8;
+    border: 1px solid #e7c7be;
+    color: #9d4336;
+    border-radius: 9px;
+    font-size: 13px;
+}
+
+/* =================================
+   CÁC NÚT ĐIỀU HƯỚNG
+================================= */
+
+.bk-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 30px;
+}
+
+.bk-actions .ds-btn-primary {
+    flex: 1;
+    min-height: 46px;
+}
+
+.bk-actions button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+/* =================================
+   HỘP THOẠI THÀNH CÔNG
+================================= */
+
+#bookingSuccess {
+    width: min(540px, calc(100% - 30px));
+    max-height: 90vh;
+    overflow: auto;
+    border: none;
+    border-radius: 22px;
+    background: white;
+    padding: 40px 28px;
+    color: #17452e;
+    text-align: center;
+    box-shadow: 0 20px 80px #0003;
+    position: fixed;
+    inset: 0;
+    margin: auto;
+}
+
+#bookingSuccess::backdrop {
+    background: rgba(20, 35, 24, 0.55);
+}
+
+.bk-success-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #e6eddb;
+    color: #17452e;
+    font-size: 36px;
+    margin: 0 auto 24px;
+}
+
+/* TIÊU ĐỀ THÔNG BÁO THÀNH CÔNG */
+
+.bk-success-title {
+    font-family: 'Be Vietnam Pro', Arial, sans-serif !important;
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 1.6;
+    letter-spacing: -0.4px;
+    color: #17452e;
+    margin: 0 0 15px;
+    text-align: center;
+    font-style: normal;
+}
+
+.bk-success-date {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 9px;
+    background: #faf7ef;
+    border: 1px solid #e3dfd4;
+    padding: 15px;
+    border-radius: 12px;
+    font-size: 13px;
+    margin: 24px 0;
+}
+
+.bk-success-close {
+    position: absolute;
+    top: 13px;
+    right: 18px;
+    border: none;
+    background: transparent;
+    color: #78917a;
+    font-size: 27px;
+    cursor: pointer;
+}
+
+/* =================================
+   RESPONSIVE ĐIỆN THOẠI
+================================= */
+
+@media (max-width: 767px) {
+
+    .bk-wrap {
+        padding-left: 18px;
+        padding-right: 18px;
+    }
+
+    .bk-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .bk-sidebar {
+        display: none;
+    }
+
+    .bk-form-card {
+        padding: 20px;
+    }
+
+    .bk-progress {
+        gap: 8px;
+    }
+
+    .bk-progress-item {
+        flex: 1;
+        flex-direction: column;
+        text-align: center;
+        font-size: 10px;
+    }
+
+    .bk-progress-line {
+        width: 15px;
+    }
+
+    .bk-service-choice {
+        grid-template-columns: 75px minmax(0, 1fr);
+        gap: 12px;
+    }
+
+    .bk-service-choice img {
+        width: 75px;
+        height: 75px;
+    }
+
+    .bk-service-select {
+        font-size: 13px;
+    }
+
+    .bk-hours {
+        gap: 8px;
+    }
+
+    .bk-hour {
+        font-size: 12px;
+    }
+
+    .bk-hero {
+        min-height: 210px;
+    }
+
+    .bk-hero p {
+        max-width: 80%;
+        font-size: 12px;
+    }
+
+    .bk-summary-row {
+        grid-template-columns: 95px minmax(0, 1fr);
+        gap: 10px;
+        font-size: 12px;
+    }
+
+    .bk-summary-total strong {
+        font-size: 18px;
+    }
+
+    .bk-success-title {
+        font-size: 25px;
+    }
+
+}
+/* =================================
+   SỨC CHỨA KHUNG GIỜ
+================================= */
+
+.bk-hour {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-height: 65px;
+}
+
+.bk-hour small {
+    display: block;
+    font-size: 10px;
+    font-weight: 400;
+}
+
+.bk-hour:not(:disabled):not(.selected) {
+    background: #e6eee2;
+}
+
+.bk-hour.selected small {
+    color: #e1efdf;
+}
+
+.bk-hour:disabled {
+    text-decoration: none;
+}
+
+
+/* KHUNG SỐ CHỖ CÒN TRỐNG */
+
+#partyBox[hidden] {
+    display: none !important;
+}
+
+.bk-capacity-box {
+    background: #eaf0e6;
+    padding: 18px;
+    border-radius: 13px;
+    margin: 20px 0 28px;
+}
+
+.bk-capacity-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 18px;
+}
+
+.bk-capacity-header span {
+    display: block;
+    font-size: 12px;
+    color: #69746a;
+    margin-bottom: 5px;
+}
+
+.bk-capacity-header strong {
+    display: block;
+    color: #17452e;
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.bk-capacity-right {
+    text-align: right;
+}
+
+
+/* CÁC Ô BIỂU TƯỢNG NGƯỜI */
+
+.bk-seat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.bk-seat {
+    min-height: 90px;
+    border-radius: 9px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 9px;
+    font-size: 11px;
+    text-align: center;
+    padding: 8px;
+}
+
+.bk-seat i {
+    font-size: 25px;
+}
+
+.bk-seat.available {
+    background: #cfe4d1;
+    color: #326549;
+}
+
+.bk-seat.occupied {
+    background: #dedfdb;
+    color: #8d928a;
+}
+
+.bk-seat.chosen {
+    background: #17452e;
+    color: #ffffff;
+}
+
+
+/* TĂNG GIẢM SỐ NGƯỜI */
+
+.bk-quantity {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+}
+
+.bk-quantity button {
+    width: 42px;
+    height: 42px;
+    border: 1px solid #cbd5c7;
+    border-radius: 50%;
+    background: #fffdf8;
+    color: #17452e;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.bk-quantity button:hover:not(:disabled) {
+    background: #17452e;
+    color: white;
+}
+
+.bk-quantity button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.bk-quantity strong {
+    font-size: 20px;
+    color: #17452e;
+}
+
+
+/* ĐIỆN THOẠI */
+
+@media (max-width: 767px) {
+
+    .bk-seat {
+        min-height: 75px;
+        font-size: 10px;
+    }
+
+    .bk-seat i {
+        font-size: 20px;
+    }
+
+    .bk-capacity-box {
+        padding: 12px;
+    }
+
+    .bk-capacity-header span {
+        font-size: 10px;
+    }
+
+    .bk-capacity-header strong {
+        font-size: 19px;
+    }
+
+    .bk-hour small {
+        font-size: 9px;
+    }
+
+}
+</style>
+
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<!-- BANNER ĐẶT LỊCH -->
+
+<section class="bk-hero">
+
+    <div class="bk-wrap bk-hero-content">
+
+        <span class="bk-eyebrow">ĐẶT LỊCH</span>
+
+        <h1 class="bk-title">Đặt lịch dịch vụ</h1>
+
+        <p class="bk-muted">
+            Chỉ với vài bước đơn giản, bạn có thể
+            lựa chọn dịch vụ và thời gian phù hợp
+            tại Duyên Spa.
+        </p>
+
+    </div>
+
+</section>
+
+
+<div class="bk-wrap">
+
+
+    <!-- THANH TIẾN TRÌNH -->
+
+    <div class="bk-progress">
+
+        <div class="bk-progress-item active"
+             data-progress="1">
+
+            <span class="bk-progress-number">1</span>
+            <span>Chọn dịch vụ & thời gian</span>
+
+        </div>
+
+        <div class="bk-progress-line"></div>
+
+        <div class="bk-progress-item"
+             data-progress="2">
+
+            <span class="bk-progress-number">2</span>
+            <span>Thông tin liên hệ</span>
+
+        </div>
+
+        <div class="bk-progress-line"></div>
+
+        <div class="bk-progress-item"
+             data-progress="3">
+
+            <span class="bk-progress-number">3</span>
+            <span>Xác nhận đặt lịch</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="bk-layout">
+
+
+        <!-- HÌNH ẢNH BÊN TRÁI -->
+
+        <aside class="bk-sidebar">
+
+            <div class="bk-sidebar-image">
+
+                <img src="{% static 'images/duyen-booking.jpg' %}"
+                     alt="Không gian thư giãn"
+                     onerror="this.onerror=null;this.src='{% static 'images/duyen-about.jpg' %}'">
+
+            </div>
+
+            <div class="bk-sidebar-note">
+
+                <h3 class="bk-title">
+                    Dành thời gian cho chính mình
+                </h3>
+
+                <p class="bk-muted">
+                    Duyên Spa luôn sẵn sàng
+                    đồng hành cùng bạn trên
+                    hành trình chăm sóc làn da.
+                </p>
+
+            </div>
+
+        </aside>
+
+
+        <!-- FORM ĐẶT LỊCH -->
+
+        <form id="spaBookingForm"
+              class="bk-form-card"
+              method="post"
+              action="{% url 'trial_booking' %}"
+              novalidate>
+
+            {% csrf_token %}
+
+
+            <!-- ==========================
+                 BƯỚC 1: DỊCH VỤ VÀ GIỜ HẸN
+            ========================== -->
+
+            <section class="bk-step"
+                     data-step="1">
+
+
+                <div class="bk-field">
+
+                    <label class="bk-label"
+                           for="serviceSelect">
+
+                        1. Chọn dịch vụ
+
+                    </label>
+
+                    <div class="bk-service-choice">
+
+                        <img id="selectedServiceImage"
+                             src="{% static 'images/duyen-about.jpg' %}"
+                             alt="Dịch vụ"
+                             data-fallback="{% static 'images/duyen-about.jpg' %}">
+
+                        <div>
+
+                            <select name="service"
+                                    id="serviceSelect"
+                                    class="bk-service-select"
+                                    required>
+
+                                {% for slug, item in spa_services.items %}
+
+                                <option value="{{ slug }}"
+                                        data-price="{{ item.price }}"
+                                        data-image="{% static item.image %}"
+                                        {% if slug == selected_slug %}selected{% endif %}>
+
+                                    {{ item.name }}
+
+                                </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                            <p class="bk-service-price"
+                               id="selectedServicePrice">
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="bk-field">
+
+                    <label class="bk-label"
+                           for="bookingDate">
+
+                        2. Chọn ngày
+
+                    </label>
+
+                    <input type="date"
+                           id="bookingDate"
+                           name="register_date"
+                           class="bk-input"
+                           value="{{ today }}"
+                           min="{{ today }}"
+                           required>
+
+                </div>
+
+
+                <div class="bk-field">
+
+                    <label class="bk-label">
+                        3. Chọn khung giờ còn trống
+                    </label>
+
+                    <input type="hidden"
+                           id="bookingTime"
+                           name="appointment_time">
+
+                    <div class="bk-hours">
+
+                        {% for hour in hours %}
+
+                        <button type="button"
+                                class="bk-hour"
+                                data-hour="{{ hour }}"
+                                aria-pressed="false"
+                                disabled>
+
+                            {{ hour }}
+
+                        </button>
+
+                        {% endfor %}
+
+                    </div>
+
+                    <p id="slotNote"
+                       class="bk-slot-note"
+                       aria-live="polite">
+
+                        Đang kiểm tra khung giờ...
+
+                    </p>
+
+                    <button type="button"
+                            class="bk-refresh"
+                            id="refreshSlots">
+
+                        Cập nhật giờ trống
+
+                    </button>
+
+                </div>
+<!-- =================================
+     SỐ CHỖ VÀ SỐ LƯỢNG NGƯỜI
+================================== -->
+
+<div id="partyBox" hidden>
+
+    <div class="bk-capacity-box">
+
+        <div class="bk-capacity-header">
+
+            <div>
+                <span>Khung giờ đã chọn</span>
+
+                <strong id="partySelectedHour">
+                    09:00
+                </strong>
+            </div>
+
+            <div class="bk-capacity-right">
+                <span>Số chỗ còn khả dụng</span>
+
+                <strong id="partyAvailable">
+                    3/3
+                </strong>
+            </div>
+
+        </div>
+
+        <div id="partySeats"
+             class="bk-seat-grid">
+        </div>
+
+    </div>
+
+
+    <div class="bk-field">
+
+        <label class="bk-label">
+            4. Số lượng người sử dụng dịch vụ
+        </label>
+
+        <input type="hidden"
+               name="party_size"
+               id="partySize"
+               value="1">
+
+        <div class="bk-quantity">
+
+            <button type="button"
+                    id="partyMinus"
+                    aria-label="Giảm số người">
+
+                <i class="fa fa-minus"></i>
+
+            </button>
+
+            <strong id="partyCount">
+                1 người
+            </strong>
+
+            <button type="button"
+                    id="partyPlus"
+                    aria-label="Tăng số người">
+
+                <i class="fa fa-plus"></i>
+
+            </button>
+
+        </div>
+
+        <p id="partyLimit"
+           class="bk-slot-note"
+           aria-live="polite">
+        </p>
+
+    </div>
+
+</div>
+            </section>
+
+
+            <!-- ==========================
+                 BƯỚC 2: THÔNG TIN LIÊN HỆ
+            ========================== -->
+
+            <section class="bk-step"
+                     data-step="2"
+                     hidden>
+
+                <h2 class="bk-step-heading">
+                    Thông tin liên hệ
+                </h2>
+
+
+                <div class="bk-field">
+
+                    <label class="bk-label"
+                           for="bookingName">
+
+                        Họ và tên
+                        <span class="bk-required">*</span>
+
+                    </label>
+
+                    <input type="text"
+                           id="bookingName"
+                           name="full_name"
+                           class="bk-input"
+                           placeholder="Nhập họ và tên của bạn"
+                           value="{{ initial_name }}"
+                           autocomplete="name"
+                           maxlength="100"
+                           required>
+
+                </div>
+
+
+                <div class="bk-field">
+
+                    <label class="bk-label"
+                           for="bookingPhone">
+
+                        Số điện thoại
+                        <span class="bk-required">*</span>
+
+                    </label>
+
+                    <input type="tel"
+                           id="bookingPhone"
+                           name="phone"
+                           class="bk-input"
+                           placeholder="Ví dụ: 0901 234 567"
+                           autocomplete="tel"
+                           maxlength="20"
+                           required>
+
+                </div>
+
+
+                <div class="bk-field">
+
+                    <label class="bk-label"
+                           for="bookingEmail">
+
+                        Email
+                        <span class="bk-required">*</span>
+
+                    </label>
+
+                    <input type="email"
+                           id="bookingEmail"
+                           name="email"
+                           class="bk-input"
+                           placeholder="email@example.com"
+                           value="{{ initial_email }}"
+                           autocomplete="email"
+                           maxlength="254"
+                           required>
+
+                </div>
+
+
+                <div class="bk-field">
+
+                    <label class="bk-label"
+                           for="bookingNotes">
+
+                        Ghi chú (không bắt buộc)
+
+                    </label>
+
+                    <textarea id="bookingNotes"
+                              name="notes"
+                              class="bk-input"
+                              maxlength="1000"
+                              placeholder="Bạn có yêu cầu gì thêm cho lịch hẹn không?"></textarea>
+
+                </div>
+
+
+                <label class="bk-consent">
+
+                    <input type="checkbox"
+                           id="bookingConsent"
+                           name="contact_consent"
+                           value="true"
+                           required>
+
+                    <span>
+                        Tôi đồng ý để Duyên Spa liên hệ
+                        xác nhận lịch hẹn.
+                    </span>
+
+                </label>
+
+            </section>
+
+
+            <!-- ==========================
+                 BƯỚC 3: XÁC NHẬN ĐẶT LỊCH
+            ========================== -->
+
+            <section class="bk-step"
+                     data-step="3"
+                     hidden>
+
+                <h2 class="bk-step-heading">
+                    Xác nhận đặt lịch
+                </h2>
+
+                <p class="bk-muted">
+                    Vui lòng kiểm tra lại thông tin
+                    trước khi gửi yêu cầu đặt lịch.
+                </p>
+
+
+                <div class="bk-summary">
+
+                    <div class="bk-summary-service">
+
+                        <img id="summaryImage"
+                             src="{% static 'images/duyen-about.jpg' %}"
+                             alt="Dịch vụ đã chọn">
+
+                        <div>
+
+                            <h3 id="summaryService"></h3>
+
+                            <span class="bk-muted">
+                                Dịch vụ đã lựa chọn
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="bk-summary-row">
+
+                        <span>Ngày hẹn</span>
+
+                        <strong id="summaryDate"></strong>
+
+                    </div>
+
+                    <div class="bk-summary-row">
+
+                        <span>Khung giờ</span>
+
+                        <strong id="summaryTime"></strong>
+
+                    </div>
+
+                    <div class="bk-summary-row">
+
+                        <span>Họ và tên</span>
+
+                        <strong id="summaryName"></strong>
+
+                    </div>
+
+                    <div class="bk-summary-row">
+
+                        <span>Số điện thoại</span>
+
+                        <strong id="summaryPhone"></strong>
+
+                    </div>
+
+                    <div class="bk-summary-row">
+
+                        <span>Email</span>
+
+                        <strong id="summaryEmail"></strong>
+
+                    </div>
+
+                    <div class="bk-summary-row">
+
+                        <span>Ghi chú</span>
+
+                        <strong id="summaryNotes"></strong>
+
+                    </div>
+<!-- SỐ LƯỢNG KHÁCH -->
+
+<div class="bk-summary-row">
+
+    <span>Số lượng khách</span>
+
+    <strong id="summaryPartySize"></strong>
+
+</div>
+
+
+<!-- SỐ CHỖ CÒN LẠI -->
+
+<div class="bk-summary-row">
+
+    <span>Số chỗ còn lại sau khi đặt</span>
+
+    <strong id="summaryRemaining"
+            style="color: #17452e;">
+    </strong>
+
+</div>
+
+                    <div class="bk-summary-total">
+
+                        <span>Chi phí tham khảo</span>
+
+                        <strong id="summaryPrice"></strong>
+
+                    </div>
+
+                </div>
+
+                <p class="bk-muted"
+                   style="margin-top: 18px;">
+
+                    Lịch hẹn sẽ ở trạng thái chờ xác nhận.
+                    Duyên Spa sẽ liên hệ lại với bạn
+                    để xác nhận dịch vụ và chi phí.
+
+                </p>
+
+            </section>
+
+
+            <!-- THÔNG BÁO LỖI -->
+
+            <div id="bookingError"
+                 class="bk-alert"
+                 role="alert"
+                 hidden>
+            </div>
+
+
+            <!-- NÚT ĐIỀU HƯỚNG -->
+
+            <div class="bk-actions">
+
+                <button type="button"
+                        id="previousStep"
+                        class="ds-btn ds-btn-outline"
+                        hidden>
+
+                    <i class="fa fa-arrow-left"></i>
+                    Quay lại
+
+                </button>
+
+
+                <button type="button"
+                        id="nextStep"
+                        class="ds-btn ds-btn-primary">
+
+                    Tiếp tục
+                    <i class="fa fa-arrow-right"></i>
+
+                </button>
+
+
+                <button type="submit"
+                        id="submitBooking"
+                        class="ds-btn ds-btn-primary"
+                        hidden>
+
+                    <i class="fa fa-check"></i>
+
+                    Gửi yêu cầu đặt lịch
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================
+     HỘP THOẠI ĐẶT LỊCH THÀNH CÔNG
+========================== -->
+
+<dialog id="bookingSuccess"
+        aria-labelledby="bookingSuccessTitle">
+
+<form method="dialog">
+
+    <button type="submit"
+            class="bk-success-close"
+            aria-label="Đóng"
+            id="closeSuccess">
+
+        &times;
+
+    </button>
+
+</form>
+
+    <div class="bk-success-icon">
+
+        <i class="fa fa-calendar-check-o"></i>
+
+    </div>
+
+    <h2 class="bk-success-title"
+        id="bookingSuccessTitle">
+
+        Đã gửi yêu cầu đặt lịch!
+
+    </h2>
+
+    <p class="bk-muted">
+
+        Chúng tôi đã nhận được yêu cầu của bạn
+        và sẽ sớm liên hệ xác nhận lịch hẹn.
+
+    </p>
+
+    <div class="bk-success-date">
+
+        <i class="fa fa-calendar"></i>
+
+        <span>Ngày & giờ hẹn:</span>
+
+        <strong id="successDateTime"></strong>
+
+    </div>
+<p class="bk-muted">
+
+    Số lượng khách:
+
+    <strong id="successPartySize"></strong>
+
+</p>
+    <p class="bk-muted">
+
+        Mã lịch hẹn:
+        <strong id="successBookingId"></strong>
+
+    </p>
+
+    <button type="button"
+            <div id="manageBookingBox"
+     style="display:none; margin:20px 0;">
+
+    <a id="manageBookingLink"
+       href="#"
+       style="color:#17452e; font-weight:600;">
+
+        Xem và hủy lịch hẹn của tôi
+
+    </a>
+
+    <p id="guestBookingReminder"
+       style="display:none; font-size:12px;
+              color:#69746a; margin-top:10px;">
+
+        Hãy lưu liên kết này để xem hoặc hủy lịch
+        sau khi rời trang.
+
+    </p>
+
+</div>
+<!-- NÚT ĐỒNG Ý -->
+
+<form method="dialog">
+
+    <button type="submit"
+            id="successOk"
+            class="ds-btn ds-btn-primary"
+            style="min-width: 170px;">
+
+        Đồng ý
+
+    </button>
+
+</form>
+
+</dialog>
+
+{% endblock content %}
+
+
+{% block extra_js %}
+
+<script>
+
+(function () {
+
+    const form = document.getElementById(
+        'spaBookingForm'
+    );
+
+    const serviceSelect = document.getElementById(
+        'serviceSelect'
+    );
+
+    const bookingDate = document.getElementById(
+        'bookingDate'
+    );
+
+    const bookingTime = document.getElementById(
+        'bookingTime'
+    );
+
+    const hourButtons = document.querySelectorAll(
+        '.bk-hour'
+    );
+
+    const nextButton = document.getElementById(
+        'nextStep'
+    );
+
+    const previousButton = document.getElementById(
+        'previousStep'
+    );
+
+    const submitButton = document.getElementById(
+        'submitBooking'
+    );
+
+    const errorBox = document.getElementById(
+        'bookingError'
+    );
+
+    const slotNote = document.getElementById(
+        'slotNote'
+    );
+
+    const successDialog = document.getElementById(
+        'bookingSuccess'
+    );
+
+    const serviceImage = document.getElementById(
+        'selectedServiceImage'
+    );
+
+    const summaryImage = document.getElementById(
+        'summaryImage'
+    );
+
+    const fallbackImage = serviceImage.dataset.fallback;
+
+    let currentStep = 1;
+
+    let slotRequest = 0;
+
+    let submitting = false;
+/* =================================
+   QUẢN LÝ SỐ LƯỢNG NGƯỜI
+================================= */
+
+const partyBox = document.getElementById(
+    'partyBox'
+);
+
+const partySize = document.getElementById(
+    'partySize'
+);
+
+const partyMinus = document.getElementById(
+    'partyMinus'
+);
+
+const partyPlus = document.getElementById(
+    'partyPlus'
+);
+
+let slotCapacity = 3;
+
+let slotRemaining = {};
+
+
+/* CẬP NHẬT KHUNG SỐ LƯỢNG NGƯỜI */
+
+function syncParty(quantity = 1) {
+
+    const hour = bookingTime.value;
+
+    const available = Number(
+        slotRemaining[hour] || 0
+    );
+
+    if (!hour || available === 0) {
+
+        partyBox.hidden = true;
+
+        partySize.value = '';
+
+        return;
+
+    }
+
+    partyBox.hidden = false;
+
+    const count = Math.min(
+        available,
+        Math.max(1, quantity)
+    );
+
+    partySize.value = count;
+
+    document.getElementById(
+        'partySelectedHour'
+    ).textContent = hour;
+
+    document.getElementById(
+        'partyAvailable'
+    ).textContent =
+        available + '/' + slotCapacity;
+
+    document.getElementById(
+        'partyCount'
+    ).textContent = count + ' người';
+
+    document.getElementById(
+        'partyLimit'
+    ).textContent =
+        'Bạn có thể đặt tối đa ' +
+        available +
+        ' người trong khung giờ này.';
+
+    partyMinus.disabled = count <= 1;
+
+    partyPlus.disabled = count >= available;
+
+
+    /* HIỂN THỊ CÁC Ô NGƯỜI */
+
+    const seats = document.getElementById(
+        'partySeats'
+    );
+
+    seats.replaceChildren();
+
+    for (let i = 0; i < slotCapacity; i++) {
+
+        const seat = document.createElement('div');
+
+        let status;
+
+        let label;
+
+        if (i >= available) {
+
+            status = 'occupied';
+
+            label = 'Đã đặt';
+
+        } else if (i < count) {
+
+            status = 'chosen';
+
+            label = 'Bạn chọn';
+
+        } else {
+
+            status = 'available';
+
+            label = 'Còn trống';
+
+        }
+
+        seat.className =
+            'bk-seat ' + status;
+
+        const icon = document.createElement('i');
+
+        icon.className = 'fa fa-user-o';
+
+        icon.setAttribute('aria-hidden', 'true');
+
+        const text = document.createElement('span');
+
+        text.textContent = label;
+
+        seat.append(icon, text);
+
+        seats.appendChild(seat);
+
+    }
+
+}
+
+
+/* NÚT GIẢM SỐ NGƯỜI */
+
+partyMinus.addEventListener('click', function () {
+
+    const count = Number(partySize.value);
+
+    if (count > 1) {
+
+        syncParty(count - 1);
+
+    }
+
+});
+
+
+/* NÚT TĂNG SỐ NGƯỜI */
+
+partyPlus.addEventListener('click', function () {
+
+    const count = Number(partySize.value);
+
+    const available = Number(
+        slotRemaining[bookingTime.value] || 0
+    );
+
+    if (count < available) {
+
+        syncParty(count + 1);
+
+    }
+
+});
+
+    /* ==========================
+       XỬ LÝ HÌNH ẢNH DỊCH VỤ
+    ========================== */
+
+    [serviceImage, summaryImage].forEach(function (img) {
+
+        img.addEventListener('error', function () {
+
+            if (img.getAttribute('src') !== fallbackImage) {
+
+                img.src = fallbackImage;
+
+            }
+
+        });
+
+    });
+
+
+    function updateService() {
+
+        const option =
+            serviceSelect.options[serviceSelect.selectedIndex];
+
+        if (!option) return;
+
+        serviceImage.src = option.dataset.image;
+
+        document.getElementById(
+            'selectedServicePrice'
+        ).textContent =
+            'Giá tham khảo: ' + option.dataset.price;
+
+    }
+
+    serviceSelect.addEventListener(
+        'change',
+        updateService
+    );
+
+
+    /* ==========================
+       HIỂN THỊ THÔNG BÁO
+    ========================== */
+
+    function showError(message) {
+
+        errorBox.textContent = message;
+
+        errorBox.hidden = false;
+
+    }
+
+    function clearError() {
+
+        errorBox.hidden = true;
+
+        errorBox.textContent = '';
+
+    }
+
+
+    /* ==========================
+       ĐỊNH DẠNG NGÀY TIẾNG VIỆT
+    ========================== */
+
+    function formatDate(value) {
+
+        const parts = value.split('-').map(Number);
+
+        const selectedDate = new Date(
+            parts[0],
+            parts[1] - 1,
+            parts[2]
+        );
+
+        return new Intl.DateTimeFormat('vi-VN', {
+
+            weekday: 'long',
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+
+        }).format(selectedDate);
+
+    }
+
+
+    /* ==========================
+       KIỂM TRA GIỜ CÒN TRỐNG
+    ========================== */
+
+function resetHours() {
+
+    bookingTime.value = '';
+
+    slotRemaining = {};
+
+    partyBox.hidden = true;
+
+    partySize.value = '';
+
+    hourButtons.forEach(function (button) {
+
+        button.classList.remove('selected');
+
+        button.setAttribute(
+            'aria-pressed', 'false'
+        );
+
+        button.disabled = true;
+
+        button.textContent = button.dataset.hour;
+
+    });
+
+}
+
+
+async function loadAvailableHours() {
+
+    const requestNumber = ++slotRequest;
+
+    resetHours();
+
+    if (!bookingDate.value) {
+
+        slotNote.textContent =
+            'Vui lòng chọn ngày hẹn.';
+
+        return;
+
+    }
+
+    slotNote.textContent =
+        'Đang kiểm tra khung giờ...';
+
+    try {
+
+        const url = new URL(form.action);
+
+        url.searchParams.set(
+            'action', 'slots'
+        );
+
+        url.searchParams.set(
+            'date', bookingDate.value
+        );
+
+        const response = await fetch(url, {
+            cache: 'no-store'
+        });
+
+        const data = await response.json();
+
+        if (requestNumber !== slotRequest) {
+            return;
+        }
+
+        if (!response.ok || !data.success) {
+
+            throw new Error(
+                'Không tải được lịch.'
+            );
+
+        }
+
+        slotCapacity = Number(data.capacity);
+
+        slotRemaining = data.remaining;
+
+        hourButtons.forEach(function (button) {
+
+            const hour = button.dataset.hour;
+
+            const available = Number(
+                slotRemaining[hour] || 0
+            );
+
+            button.disabled = available === 0;
+
+            const timeLabel =
+                document.createElement('span');
+
+            timeLabel.textContent = hour;
+
+            const seatLabel =
+                document.createElement('small');
+
+            seatLabel.textContent = available > 0
+
+                ? 'Còn ' +
+                  available +
+                  '/' +
+                  slotCapacity +
+                  ' chỗ'
+
+                : 'Không khả dụng';
+
+            button.replaceChildren(
+                timeLabel,
+                seatLabel
+            );
+
+        });
+
+        slotNote.textContent =
+            data.available.length > 0
+
+            ? 'Vui lòng chọn khung giờ phù hợp.'
+
+            : 'Ngày này không còn giờ khả dụng. Vui lòng chọn ngày khác.';
+
+    } catch (error) {
+
+        if (requestNumber !== slotRequest) {
+            return;
+        }
+
+        slotNote.textContent =
+            'Không thể tải giờ trống. Hãy bấm Cập nhật giờ trống.';
+
+    }
+
+}
+
+
+    bookingDate.addEventListener(
+        'change',
+        loadAvailableHours
+    );
+
+    document.getElementById(
+        'refreshSlots'
+    ).addEventListener(
+        'click',
+        loadAvailableHours
+    );
+
+
+    hourButtons.forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            if (button.disabled) return;
+
+            clearError();
+
+            hourButtons.forEach(function (item) {
+
+                item.classList.remove('selected');
+
+                item.setAttribute(
+                    'aria-pressed', 'false'
+                );
+
+            });
+
+            button.classList.add('selected');
+
+            button.setAttribute(
+                'aria-pressed', 'true'
+            );
+
+            bookingTime.value = button.dataset.hour;
+syncParty(1);
+        });
+
+    });
+
+
+    /* ==========================
+       KIỂM TRA THÔNG TIN
+    ========================== */
+
+function validateStepOne() {
+
+    if (!serviceSelect.reportValidity()) {
+        return false;
+    }
+
+    if (!bookingDate.reportValidity()) {
+        return false;
+    }
+
+    if (!bookingTime.value) {
+
+        showError(
+            'Vui lòng chọn khung giờ còn trống.'
+        );
+
+        return false;
+
+    }
+
+    const count = Number(partySize.value);
+
+    const available = Number(
+        slotRemaining[bookingTime.value] || 0
+    );
+
+    if (
+        !Number.isInteger(count) ||
+        count < 1 ||
+        count > available
+    ) {
+
+        showError(
+            'Số người vượt quá số chỗ còn trống.'
+        );
+
+        return false;
+
+    }
+
+    return true;
+
+}
+
+    function validateStepTwo() {
+
+        const fields = [
+
+            'bookingName',
+            'bookingPhone',
+            'bookingEmail',
+            'bookingNotes',
+            'bookingConsent'
+
+        ];
+
+        for (const id of fields) {
+
+            const input = document.getElementById(id);
+
+            if (!input.reportValidity()) {
+
+                return false;
+
+            }
+
+        }
+
+        const name = document.getElementById(
+            'bookingName'
+        ).value.trim();
+
+        const phone = document.getElementById(
+            'bookingPhone'
+        ).value.replace(/[\s().-]/g, '');
+
+        if (!name) {
+
+            showError('Vui lòng nhập họ và tên.');
+
+            return false;
+
+        }
+
+        if (!/^\+?[0-9]{8,15}$/.test(phone)) {
+
+            showError(
+                'Số điện thoại không hợp lệ.'
+            );
+
+            return false;
+
+        }
+
+        return true;
+
+    }
+
+
+    /* ==========================
+       CẬP NHẬT TRANG XÁC NHẬN
+    ========================== */
+
+    function updateSummary() {
+const selectedPeople = Number(partySize.value);
+
+const availableSeats = Number(
+    slotRemaining[bookingTime.value] || 0
+);
+
+document.getElementById(
+    'summaryPartySize'
+).textContent =
+    selectedPeople + ' người';
+
+document.getElementById(
+    'summaryRemaining'
+).textContent =
+    Math.max(
+        0,
+        availableSeats - selectedPeople
+    ) + ' chỗ (dự kiến)';
+        const option =
+            serviceSelect.options[serviceSelect.selectedIndex];
+
+        summaryImage.src = option.dataset.image;
+
+        document.getElementById(
+            'summaryService'
+        ).textContent = option.textContent.trim();
+
+        document.getElementById(
+            'summaryPrice'
+        ).textContent = option.dataset.price;
+
+        document.getElementById(
+            'summaryDate'
+        ).textContent = formatDate(bookingDate.value);
+
+        document.getElementById(
+            'summaryTime'
+        ).textContent = bookingTime.value;
+
+        document.getElementById(
+            'summaryName'
+        ).textContent =
+            document.getElementById('bookingName').value;
+
+        document.getElementById(
+            'summaryPhone'
+        ).textContent =
+            document.getElementById('bookingPhone').value;
+
+        document.getElementById(
+            'summaryEmail'
+        ).textContent =
+            document.getElementById('bookingEmail').value;
+
+        document.getElementById(
+            'summaryNotes'
+        ).textContent =
+            document.getElementById('bookingNotes').value
+            || 'Không có';
+
+    }
+
+
+    /* ==========================
+       CHUYỂN ĐỔI GIỮA 3 BƯỚC
+    ========================== */
+
+    function showStep(step) {
+
+        currentStep = step;
+
+        clearError();
+
+        document.querySelectorAll(
+            '.bk-step'
+        ).forEach(function (section) {
+
+            section.hidden =
+                Number(section.dataset.step) !== step;
+
+        });
+
+
+        document.querySelectorAll(
+            '.bk-progress-item'
+        ).forEach(function (item) {
+
+            const number = Number(
+                item.dataset.progress
+            );
+
+            item.classList.toggle(
+                'active', number === step
+            );
+
+            item.classList.toggle(
+                'done', number < step
+            );
+
+            item.querySelector(
+                '.bk-progress-number'
+            ).textContent =
+                number < step ? '✓' : number;
+
+            if (number === step) {
+
+                item.setAttribute(
+                    'aria-current', 'step'
+                );
+
+            } else {
+
+                item.removeAttribute(
+                    'aria-current'
+                );
+
+            }
+
+        });
+
+
+        previousButton.hidden = step === 1;
+
+        nextButton.hidden = step === 3;
+
+        submitButton.hidden = step !== 3;
+
+        if (step === 3) {
+
+            updateSummary();
+
+        }
+
+        form.scrollIntoView({
+            behavior: 'instant',
+            block: 'start'
+        });
+
+    }
+
+
+    nextButton.addEventListener('click', function () {
+
+        clearError();
+
+        if (
+            currentStep === 1
+            && validateStepOne()
+        ) {
+
+            showStep(2);
+
+        } else if (
+            currentStep === 2
+            && validateStepTwo()
+        ) {
+
+            showStep(3);
+
+        }
+
+    });
+
+
+    previousButton.addEventListener('click', function () {
+
+        if (currentStep > 1 && !submitting) {
+
+            showStep(currentStep - 1);
+
+        }
+
+    });
+
+
+    /* ==========================
+       GỬI YÊU CẦU VỀ DJANGO
+    ========================== */
+
+    form.addEventListener('submit', async function (event) {
+
+        event.preventDefault();
+
+        if (currentStep !== 3 || submitting) return;
+
+        clearError();
+
+        submitting = true;
+
+        submitButton.disabled = true;
+
+        previousButton.disabled = true;
+
+        submitButton.textContent =
+            'Đang gửi yêu cầu...';
+
+        try {
+
+            const response = await fetch(form.action, {
+
+                method: 'POST',
+
+                body: new FormData(form),
+
+                credentials: 'same-origin'
+
+            });
+
+            const data = await response.json();
+
+
+            /* NẾU KHUNG GIỜ ĐÃ CÓ NGƯỜI ĐẶT */
+
+            if (response.status === 409) {
+
+                showStep(1);
+
+                await loadAvailableHours();
+
+                showError(data.error);
+
+                return;
+
+            }
+
+
+            if (!response.ok || !data.success) {
+
+                showError(
+
+                    data.error ||
+
+                    'Không thể gửi yêu cầu. Vui lòng thử lại.'
+
+                );
+
+                return;
+
+            }
+
+
+            /* HIỂN THỊ THÀNH CÔNG SAU KHI ĐÃ LƯU */
+
+            document.getElementById(
+                'successDateTime'
+            ).textContent =
+                data.time + ', ' + formatDate(data.date);
+
+            document.getElementById(
+                'successBookingId'
+            ).textContent =
+                'DS-' + data.booking_id;
+document.getElementById(
+    'successPartySize'
+).textContent =
+    data.party_size + ' người';
+            // HIỂN THỊ LIÊN KẾT QUẢN LÝ LỊCH HẸN
+
+if (data.manage_url) {
+
+    const manageBox = document.getElementById(
+        'manageBookingBox'
+    );
+
+    document.getElementById(
+        'manageBookingLink'
+    ).href = data.manage_url;
+
+    manageBox.style.display = 'block';
+
+    document.getElementById(
+        'guestBookingReminder'
+    ).style.display = data.is_guest
+        ? 'block'
+        : 'none';
+
+}
+
+// HIỂN THỊ POPUP ĐẶT LỊCH THÀNH CÔNG
+
+successDialog.showModal();
+
+        } catch (error) {
+
+            showError(
+
+                'Không nhận được phản hồi từ hệ thống. '
+
+                + 'Vui lòng kiểm tra lịch hẹn trước khi gửi lại.'
+
+            );
+
+        } finally {
+
+            submitting = false;
+
+            submitButton.disabled = false;
+
+            previousButton.disabled = false;
+
+            submitButton.innerHTML =
+                '<i class="fa fa-check"></i> Gửi yêu cầu đặt lịch';
+
+        }
+
+    });
+
+
+    /* ==========================
+       ĐÓNG HỘP THOẠI THÀNH CÔNG
+    ========================== */
+
+    document.getElementById(
+        'successOk'
+    ).addEventListener('click', function () {
+
+        successDialog.close();
+
+    });
+
+    document.getElementById(
+        'closeSuccess'
+    ).addEventListener('click', function () {
+
+        successDialog.close();
+
+    });
+
+    successDialog.addEventListener(
+        'close',
+        function () {
+
+            window.location.href = "{% url 'home' %}";
+
+        }
+    );
+
+
+    /* KHỞI TẠO TRANG */
+
+    updateService();
+
+    loadAvailableHours();
+
+})();
+
+</script>
+
+{% endblock extra_js %}

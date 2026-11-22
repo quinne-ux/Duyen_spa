@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#faf7ef">
+    <title>{% block title %}Nhân viên | Duyên Spa{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:wght@500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{% static 'css/staff-appointments.css' %}">
+</head>
+<body class="staff-site">
+<header class="staff-site-header">
+  <div class="staff-header-inner">
+    <a class="staff-brand" href="{% url 'staff_appointments' %}" aria-label="Duyên Spa - Tất cả lịch hẹn">
+      <img src="{% static 'images/duyen-logo.svg' %}" alt="" width="45" height="45">
+      <span>Duyên Spa</span>
+    </a>
+    <nav class="staff-navigation" aria-label="Menu nhân viên">
+      <a href="{% url 'staff_appointments' %}" class="{% if section == 'appointments' %}active{% endif %}" {% if section == 'appointments' %}aria-current="page"{% endif %}>Tất cả lịch hẹn</a>
+      <a href="{% url 'staff_confirmation_history' %}" class="{% if section == 'history' %}active{% endif %}" {% if section == 'history' %}aria-current="page"{% endif %}>Lịch sử xác nhận</a>
+    </nav>
+    <div class="staff-account">
+      <span class="staff-username"><i class="fa fa-user" aria-hidden="true"></i> {{ user.get_full_name|default:user.username }}</span>
+      <a href="{% url 'logout' %}">Đăng xuất</a>
+    </div>
+  </div>
+</header>
+<main class="staff-main">
+  <div class="staff-container">
+    {% if messages %}
+    <div class="staff-messages" role="status">
+      {% for message in messages %}
+      <div class="staff-message {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+  </div>
+</main>
+<footer class="staff-footer">
+  <div class="staff-footer-inner">
+    <span class="staff-footer-brand">Duyên Spa</span>
+    <span>Chăm sóc làn da, nâng niu vẻ đẹp tự nhiên.</span>
+    <span>© {% now 'Y' %} Duyên Spa.</span>
+  </div>
+</footer>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

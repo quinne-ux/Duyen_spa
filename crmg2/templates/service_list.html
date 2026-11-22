@@ -1,0 +1,654 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Dịch vụ | Duyên Spa
+{% endblock title %}
+
+{% block body_class %}
+ds-inner-page ds-services-page
+{% endblock body_class %}
+
+{% block legacy_css %}{% endblock legacy_css %}
+{% block legacy_js %}{% endblock legacy_js %}
+
+
+{% block extra_css %}
+
+<style>
+
+/* ===================================
+   GIAO DIỆN TRANG DỊCH VỤ
+=================================== */
+
+body.ds-services-page {
+    margin: 0;
+    background: #faf7ef;
+    color: #17452e;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+}
+
+.ds-services-page .ds-main {
+    padding-top: var(--ds-head, 76px);
+}
+
+.spa-service-wrap {
+    width: 100%;
+    max-width: 1350px;
+    margin: 0 auto;
+    padding-left: clamp(20px, 4vw, 50px);
+    padding-right: clamp(20px, 4vw, 50px);
+}
+
+
+/* ===================================
+   BANNER TRANG DỊCH VỤ
+=================================== */
+
+.spa-service-hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    min-height: 270px;
+
+    display: flex;
+    align-items: center;
+
+    background: #efe6d7;
+}
+
+.spa-service-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 0 40%;
+    z-index: -2;
+
+    background-image:
+        url("{% static 'images/duyen-banner.jpg' %}");
+
+    background-size: cover;
+    background-position: center;
+}
+
+.spa-service-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+
+    background: linear-gradient(
+        90deg,
+        #f4ecdf 0%,
+        #f4ecdf 35%,
+        rgba(244, 236, 223, 0.94) 42%,
+        rgba(244, 236, 223, 0.35) 65%,
+        transparent 90%
+    );
+}
+
+.spa-service-hero-content {
+    padding-top: 45px;
+    padding-bottom: 45px;
+}
+
+.spa-service-label {
+    display: block;
+
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+
+    color: #658169;
+
+    margin-bottom: 14px;
+}
+
+.spa-service-hero h1 {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(32px, 3.5vw, 52px);
+    font-style: italic;
+    font-weight: 400;
+    line-height: 1.2;
+
+    color: #17452e;
+
+    margin: 0 0 16px;
+}
+
+.spa-service-hero p {
+    color: #69746a;
+    font-size: 14px;
+    line-height: 1.8;
+    max-width: 450px;
+    margin: 0;
+}
+
+
+/* ===================================
+   DANH MỤC DỊCH VỤ
+=================================== */
+
+.spa-catalog {
+    padding: 26px 0 55px;
+    min-height: 450px;
+}
+
+.spa-filter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-bottom: 30px;
+}
+
+.spa-filter-btn {
+    padding: 10px 24px;
+
+    border: 1px solid #cbd5c7;
+    border-radius: 50px;
+
+    background: transparent;
+    color: #17452e;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.spa-filter-btn:hover {
+    background: #e9eee4;
+}
+
+.spa-filter-btn.active {
+    background: #17452e;
+    color: #ffffff;
+    border-color: #17452e;
+}
+
+
+/* ===================================
+   DANH SÁCH DỊCH VỤ - 2 CỘT
+=================================== */
+
+.spa-service-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.spa-service-card {
+    display: grid;
+    grid-template-columns: 35% minmax(0, 1fr);
+
+    gap: 20px;
+    padding: 12px;
+
+    min-height: 200px;
+
+    background: #fffdf8;
+    border: 1px solid #e6e1d7;
+    border-radius: 18px;
+
+    box-shadow: 0 3px 12px rgba(23, 69, 46, 0.03);
+
+    transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.spa-service-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 25px rgba(23, 69, 46, 0.09);
+}
+
+.spa-service-card[hidden] {
+    display: none !important;
+}
+
+
+/* HÌNH ẢNH DỊCH VỤ */
+
+.spa-card-image {
+    position: relative;
+    overflow: hidden;
+
+    min-height: 170px;
+
+    border-radius: 12px;
+    background: #e8e3d8;
+}
+
+.spa-card-image img {
+    position: absolute;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    transition: transform 0.4s ease;
+}
+
+.spa-service-card:hover .spa-card-image img {
+    transform: scale(1.05);
+}
+
+
+/* NỘI DUNG DỊCH VỤ */
+
+.spa-card-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 8px 6px 6px 0;
+}
+
+.spa-card-content h2 {
+    font-family: Georgia, 'Times New Roman', serif;
+
+    font-size: clamp(20px, 1.7vw, 26px);
+    font-weight: 500;
+    line-height: 1.3;
+
+    color: #17452e;
+
+    margin: 0 0 10px;
+}
+
+.spa-card-content p {
+    font-size: 13px;
+    line-height: 1.7;
+    color: #69746a;
+
+    margin: 0 0 20px;
+}
+
+
+/* GIÁ VÀ NÚT ĐẶT LỊCH */
+
+.spa-card-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    flex-wrap: wrap;
+    gap: 12px;
+
+    margin-top: auto;
+}
+
+.spa-card-price {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    color: #17452e;
+}
+
+.spa-card-price i {
+    color: #78917a;
+    font-size: 17px;
+}
+
+.spa-booking-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    padding: 9px 18px;
+
+    color: #17452e;
+    background: transparent;
+
+    border: 1px solid #829982;
+    border-radius: 50px;
+
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+
+    transition: all 0.2s ease;
+}
+
+.spa-booking-btn:hover {
+    background: #17452e;
+    border-color: #17452e;
+    color: #ffffff;
+}
+
+.spa-price-note {
+    color: #69746a;
+    text-align: center;
+    font-size: 12px;
+    margin: 24px 0 0;
+}
+
+
+/* ===================================
+   RESPONSIVE - MÁY TÍNH BẢNG
+=================================== */
+
+@media (max-width: 991px) {
+
+    .spa-service-card {
+        gap: 12px;
+    }
+
+    .spa-card-content h2 {
+        font-size: 21px;
+    }
+
+    .spa-service-hero {
+        min-height: 240px;
+    }
+
+}
+
+
+/* ===================================
+   RESPONSIVE - ĐIỆN THOẠI
+=================================== */
+
+@media (max-width: 767px) {
+
+    .spa-service-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .spa-service-card {
+        grid-template-columns: 34% minmax(0, 1fr);
+        gap: 12px;
+        min-height: 170px;
+    }
+
+    .spa-card-image {
+        min-height: 150px;
+    }
+
+    .spa-service-hero {
+        min-height: 260px;
+    }
+
+    .spa-service-hero h1 {
+        font-size: 34px;
+    }
+
+    .spa-service-hero p {
+        font-size: 12px;
+        max-width: 75%;
+    }
+
+    .spa-service-hero::after {
+        background: linear-gradient(
+            90deg,
+            #f4ecdf 0%,
+            rgba(244, 236, 223, 0.95) 45%,
+            rgba(244, 236, 223, 0.45) 100%
+        );
+    }
+
+    .spa-filter {
+        gap: 8px;
+        margin-bottom: 22px;
+    }
+
+    .spa-filter-btn {
+        padding: 8px 15px;
+        font-size: 11px;
+    }
+
+    .spa-card-content h2 {
+        font-size: 20px;
+    }
+
+    .spa-card-content p {
+        font-size: 12px;
+    }
+
+    .spa-card-price {
+        font-size: 12px;
+    }
+
+    .spa-booking-btn {
+        font-size: 11px;
+        padding: 7px 12px;
+    }
+
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .spa-service-card,
+    .spa-card-image img {
+        transition: none;
+    }
+
+    .spa-service-card:hover,
+    .spa-service-card:hover img {
+        transform: none;
+    }
+
+}
+/* BẤM VÀO KHUNG ĐỂ XEM CHI TIẾT */
+
+.spa-service-card {
+    position: relative;
+    cursor: pointer;
+}
+
+.spa-service-card h2 a:hover {
+    color: #78917a !important;
+}
+
+/* GIỮ NÚT ĐẶT LỊCH HOẠT ĐỘNG RIÊNG */
+
+.spa-booking-btn {
+    position: relative;
+    z-index: 2;
+}
+</style>
+
+{% endblock extra_css %}
+
+
+{% block content %}
+
+
+<!-- ===================================
+     BANNER DỊCH VỤ
+=================================== -->
+
+<section class="spa-service-hero">
+
+    <div class="spa-service-wrap spa-service-hero-content">
+
+        <span class="spa-service-label">
+            DỊCH VỤ
+        </span>
+
+        <h1>Các dịch vụ tại Duyên Spa</h1>
+
+        <p>
+            Giải pháp chăm sóc và cải thiện làn da,
+            được thiết kế phù hợp với từng nhu cầu
+            của bạn.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- ===================================
+     DANH MỤC VÀ DANH SÁCH DỊCH VỤ
+=================================== -->
+
+<section class="spa-catalog">
+
+    <div class="spa-service-wrap">
+
+
+        <!-- BỘ LỌC DỊCH VỤ -->
+
+        <div class="spa-filter">
+
+            <button type="button"
+                    class="spa-filter-btn active"
+                    data-filter="all"
+                    aria-pressed="true">
+
+                Tất cả
+
+            </button>
+
+            <button type="button"
+                    class="spa-filter-btn"
+                    data-filter="care"
+                    aria-pressed="false">
+
+                Chăm sóc da
+
+            </button>
+
+            <button type="button"
+                    class="spa-filter-btn"
+                    data-filter="treatment"
+                    aria-pressed="false">
+
+                Điều trị da
+
+            </button>
+
+            <button type="button"
+                    class="spa-filter-btn"
+                    data-filter="recovery"
+                    aria-pressed="false">
+
+                Trẻ hóa & phục hồi
+
+            </button>
+
+            <button type="button"
+                    class="spa-filter-btn"
+                    data-filter="makeup"
+                    aria-pressed="false">
+
+                Phun xăm
+
+            </button>
+
+        </div>
+
+
+        <!-- DANH SÁCH DỊCH VỤ -->
+
+        <div class="spa-service-grid">
+            {% for slug, item in spa_services.items %}
+            <article class="spa-service-card" data-category="{{ item.filter_categories }}">
+                <div class="spa-card-image"><img src="{% static item.image %}" alt="{{ item.name }}"></div>
+                <div class="spa-card-content">
+                    <h2><a href="{% url 'spa_service_detail' slug %}" class="stretched-link text-reset text-decoration-none">{{ item.name }}</a></h2>
+                    <p>{{ item.description }}</p>
+                    <div class="spa-card-bottom">
+                        <span class="spa-card-price"><i class="fa fa-tag"></i> {{ item.price }}</span>
+                        <a class="spa-booking-btn" href="{% url 'trial_booking' %}?service={{ slug }}">Đặt lịch <i class="fa fa-long-arrow-right"></i></a>
+                    </div>
+                </div>
+            </article>
+            {% empty %}<p>Hiện chưa có dịch vụ đang mở.</p>{% endfor %}
+        </div>
+
+        <p class="spa-price-note">
+            Giá hiển thị mang tính minh họa.
+            Vui lòng liên hệ spa để được tư vấn chi tiết.
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock content %}
+
+
+{% block extra_js %}
+
+<script>
+
+/* ===================================
+   CHỨC NĂNG LỌC DỊCH VỤ
+=================================== */
+
+(function () {
+
+    const filterButtons = document.querySelectorAll(
+        '.spa-filter-btn'
+    );
+
+    const serviceCards = document.querySelectorAll(
+        '.spa-service-card'
+    );
+
+    filterButtons.forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            const selectedCategory = button.dataset.filter;
+
+
+            /* THAY ĐỔI NÚT ĐANG CHỌN */
+
+            filterButtons.forEach(function (btn) {
+
+                btn.classList.remove('active');
+
+                btn.setAttribute(
+                    'aria-pressed', 'false'
+                );
+
+            });
+
+            button.classList.add('active');
+
+            button.setAttribute(
+                'aria-pressed', 'true'
+            );
+
+
+            /* HIỂN THỊ DỊCH VỤ PHÙ HỢP */
+
+            serviceCards.forEach(function (card) {
+
+                const categories =
+                    card.dataset.category.split(' ');
+
+                const matches =
+                    selectedCategory === 'all' ||
+                    categories.includes(selectedCategory);
+
+                card.hidden = !matches;
+
+            });
+
+        });
+
+    });
+
+})();
+
+</script>
+
+{% endblock extra_js %}

@@ -1,0 +1,254 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Lịch Sử Khiếu Nại - GymX Fitness Club{% endblock title %}
+
+{% block extra_css %}
+<style>
+    /* === BỐ CỤC CHUNG === */
+    .profile-layout {
+        display: flex;
+        max-width: 1200px; /* Tăng độ rộng để bảng thoáng hơn */
+        margin: 0 auto;
+        padding: 80px 15px 50px 15px;
+        gap: 30px;
+    }
+
+    /* === SIDEBAR === */
+    .profile-sidebar {
+        flex: 0 0 250px;
+        max-width: 250px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        height: fit-content;
+    }
+    .sidebar-nav a {
+        display: block;
+        padding: 15px;
+        text-decoration: none;
+        color: #222222;
+        font-weight: bold;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background-color 0.3s, color 0.3s;
+        text-transform: uppercase;
+        font-size: 14px;
+        background-color: white;
+    }
+    .sidebar-nav a:last-child {
+        border-bottom: none;
+    }
+    .sidebar-nav a.active {
+        background-color: #b30000;
+        color: white;
+    }
+    .sidebar-nav a:hover:not(.active) {
+        background-color: #f0f0f0;
+    }
+
+    /* === KHUNG NỘI DUNG === */
+    .profile-content {
+        flex-grow: 1;
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        padding: 30px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .content-area-header {
+        text-align: center;
+        padding-bottom: 20px;
+        width: 100%;
+    }
+    .content-area-header h2 {
+        margin-bottom: 15px;
+    }
+
+    /* === TABLE STYLING (ĐÃ CHỈNH SỬA ĐẸP HƠN) === */
+    .complaint-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        font-size: 0.95rem;
+    }
+
+    /* Header & Cell chung */
+    .complaint-table th, .complaint-table td {
+        padding: 12px 10px;
+        border: 1px solid #eee;
+        font-family: 'Open Sans', sans-serif;
+        vertical-align: middle; /* Căn giữa chiều dọc */
+    }
+
+    /* Header */
+    .complaint-table th {
+        background-color: #c11325;
+        color: white;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+        text-align: center; /* Căn giữa tiêu đề */
+    }
+
+    /* Cell nội dung */
+    .complaint-table td {
+        color: #333;
+        text-align: center; /* Mặc định căn giữa tất cả nội dung */
+    }
+
+    /* RIÊNG CỘT NỘI DUNG (Cột thứ 3) CĂN TRÁI CHO DỄ ĐỌC */
+    .complaint-table td:nth-child(3) {
+        text-align: left;
+        min-width: 200px; /* Đảm bảo cột nội dung đủ rộng */
+    }
+
+    /* Row chẵn lẻ */
+    .complaint-table tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+    .complaint-table tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    /* Badges */
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 50px;
+        color: white;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: capitalize;
+        white-space: nowrap;
+    }
+    .status-RECEIVED { background-color: #28a745; } /* Xanh lá */
+    .status-IN_PROGRESS { background-color: #ffc107; color: #333; } /* Vàng */
+    .status-RESOLVED { background-color: #007bff; } /* Xanh dương */
+    .status-CANCELLED { background-color: #6c757d; } /* Xám */
+
+    /* Nút Hủy */
+    .btn-cancel {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 6px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        font-weight: 600;
+        transition: background 0.3s;
+    }
+    .btn-cancel:hover {
+        background-color: #b02a37;
+    }
+
+    /* Responsive Table */
+    @media (max-width: 768px) {
+        .profile-layout {
+            flex-direction: column;
+            margin: 20px 10px;
+            padding-top: 80px;
+        }
+        .profile-sidebar {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+        .complaint-table {
+            display: block;
+            overflow-x: auto; /* Cuộn ngang nếu bảng quá rộng trên mobile */
+            white-space: nowrap;
+        }
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<div class="profile-layout container">
+
+    <div class="profile-sidebar">
+        <nav class="sidebar-nav">
+            <a href="{% url 'profile' username=request.user.username %}">THÔNG TIN CÁ NHÂN</a>
+            <a href="{% url 'complaint_history' %}" class="active">KHIẾU NẠI</a>
+        </nav>
+    </div>
+
+    <div class="profile-content">
+
+        <div class="content-area-header">
+            <h2 class="text-dark" style="font-size: 2rem; font-weight: 700;">Danh Sách Khiếu Nại Của Bạn</h2>
+            <a href="{% url 'complaint_form' %}" class="btn btn-outline-red" style="margin-top: 15px; background-color: #c1125; color: white; padding: 10px 20px; border-radius: 50px; text-transform: uppercase; background-color: #000;">
+                + Gửi Khiếu Nại Mới
+            </a>
+        </div>
+
+        {% if complaints %}
+        <div style="width: 100%; overflow-x: auto;">
+            <table class="complaint-table">
+                <thead>
+                    <tr>
+                        <th>Mã khiếu nại</th>
+                        <th>Loại khiếu nại</th>
+                        <th style="text-align: left;">Nội dung</th> <th>Ngày xảy ra</th>
+                        <th>Ngày gửi</th>
+                        <th>Trạng thái</th>
+                        <th>Người phụ trách</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for complaint in complaints %}
+                    <tr>
+                        <td><strong>{{ complaint.complaint_id }}</strong></td>
+                        <td>{{ complaint.get_complaint_type_display }}</td>
+                        <td>{{ complaint.content|truncatechars:50 }}</td>
+                        <td>{{ complaint.incident_date|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ complaint.submitted_at|date:"d/m/Y" }}</td>
+
+                        <td>
+                            <span class="status-badge status-{{ complaint.status }}">
+                                {{ complaint.get_status_display }}
+                            </span>
+                        </td>
+
+                        <td>
+                            {% if complaint.responsible_staff %}
+                                <span style="font-weight: 500;">{{ complaint.responsible_staff.get_full_name|default:complaint.responsible_staff.username }}</span>
+                            {% else %}
+                                <span style="color: #999;">Chưa có</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if complaint.status == 'RECEIVED' %}
+                                <form method="POST" action="{% url 'cancel_complaint_customer' complaint_id=complaint.complaint_id %}" style="display:inline-block;" onsubmit="return confirm('Bạn có chắc chắn muốn HỦY khiếu nại này không?');">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn-cancel">
+                                        Hủy
+                                    </button>
+                                </form>
+
+                            {% elif complaint.status == 'CANCELLED' %}
+                                <span style="color: #999; font-style: italic;">Đã hủy</span>
+
+                            {% else %}
+                                <span style="color: #ccc; font-size: 1.2rem;" title="Không thể hủy">
+                                    &mdash; </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div style="text-align: center; margin-top: 40px; color: #666;">
+            <p>Bạn chưa gửi khiếu nại nào.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}

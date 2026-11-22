@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Cập Nhật Gói {{ package.name }} - GYM-X CRM{% endblock title %}
+
+{% block content %}
+<section class="contact" style="padding-top: 100px; padding-bottom: 80px;">
+    <div class="container">
+        <div class="content" style="justify-content: center;">
+            <div class="box form wow slideInLeft" style="flex: 0 0 70%; max-width: 70%; background-color: #ffffff; padding: 40px; border-radius: 8px; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+                
+                <h2 class="text-center" style="color: #c11325; margin-bottom: 30px; font-weight: 700;">CẬP NHẬT GÓI TẬP</h2>
+
+               <form method="POST" action="{% url 'update_package' package_id=package.pk %}">
+                   {% csrf_token %}
+                   
+                   <div style="display: flex; gap: 40px;">
+                       
+                       <div style="flex: 1;">
+                           
+                           <div class="form-group mb-3">
+                               <label for="id_name" style="color: #333; font-weight: 600;">Tên dịch vụ:</label>
+                               <select name="name" id="id_name" class="form-control" style="border: 1px solid #ccc; color: #333;">
+                                   {% for key, value in package.PACKAGE_TYPE_CHOICES %}
+                                       <option value="{{ key }}" {% if package.name == key %}selected{% endif %}>{{ value }}</option>
+                                   {% endfor %}
+                               </select>
+                           </div>
+                           
+                           <div class="form-group mb-3">
+                               <label for="id_price" style="color: #333; font-weight: 600;">Giá tiền:</label>
+                               <input type="number" id="id_price" name="price" required value="{{ package.price }}"
+                                      class="form-control" style="border: 1px solid #ccc; color: #333;">
+                           </div>
+                           
+                           <div class="form-group mb-3">
+                               <label for="id_duration" style="color: #333; font-weight: 600;">Hạn sử dụng (tháng):</label>
+                               <input type="number" id="id_duration" name="duration_months" required value="{{ package.duration_months }}"
+                                      class="form-control" style="border: 1px solid #ccc; color: #333;">
+                           </div>
+                       </div>
+                       
+                       <div style="flex: 1;">
+                           <div class="form-group mb-3">
+                               <label for="id_desc" style="color: #333; font-weight: 600;">Mô tả:</label>
+                               <textarea id="id_desc" name="description" rows="7"
+                                         class="form-control" style="border: 1px solid #ccc; color: #333;">{{ package.description }}</textarea>
+                           </div>
+                           <div class="form-group mb-3">
+                               <label style="color: #333; font-weight: 600;">Mã gói tập:</label>
+                               <input type="text" value="{{ package.package_id }}" disabled
+                                      class="form-control" style="border: 1px solid #ccc; color: #333; background-color: #f0f0f0;">
+                           </div>
+                       </div>
+                   </div>
+
+                   <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                        <a href="{% url 'package_manager_view' %}" class="btn" style="background-color: #888; color: #fff; padding: 10px 30px; border-radius: 5px; text-transform: uppercase;">Hủy</a>
+                        <button type="submit" style="background-color: #c11325; color: #fff; padding: 10px 30px; border-radius: 5px; text-transform: uppercase; border: none;">Cập nhật</button>
+                   </div>
+               </form>
+            </div>
+        </div>
+     </div>
+</section>
+{% endblock content %}

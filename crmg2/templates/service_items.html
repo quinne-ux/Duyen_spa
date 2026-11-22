@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Quản lý Dịch vụ{% endblock title %}
+
+{% block extra_css %}
+<style>
+    /* CSS TÙY CHỈNH CHO TRANG QUẢN LÝ DỊCH VỤ */
+    .service-list-container {
+        padding-top: 100px;
+        padding-bottom: 50px;
+    }
+
+    .content-area {
+        background-color: transparent;
+        padding: 0 20px; /* THÊM padding 2 bên */
+        border-radius: 0;
+        max-width: 1400px; /* GIỚI HạN lại để không quá rộng */
+        margin: 0 auto;
+    }
+
+    .shadow {
+        box-shadow: none !important;
+    }
+
+    /* CSS cho Bảng */
+    .manager-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        text-align: left;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .manager-table th, .manager-table td {
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        font-family: 'Open Sans', sans-serif;
+        color: #000;
+        vertical-align: middle;
+    }
+    .manager-table thead th {
+        background-color: #c11325;
+        color: white;
+        text-transform: uppercase;
+        font-weight: 600;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+    .manager-table tr:nth-child(even) {
+        background-color: #f7f7f7;
+    }
+
+    /* Giới hạn độ rộng cột Mô tả */
+    .manager-table td:nth-child(4) {
+        max-width: 500px; /* GIỚI HạN độ rộng cột mô tả */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Thêm ... khi text dài */
+    }
+
+    /* Cố định độ rộng các cột khác */
+    .manager-table th:nth-child(1),
+    .manager-table td:nth-child(1) {
+        width: 60px; /* STT */
+    }
+    .manager-table th:nth-child(2),
+    .manager-table td:nth-child(2) {
+        width: 120px; /* Mã dịch vụ */
+    }
+    .manager-table th:nth-child(3),
+    .manager-table td:nth-child(3) {
+        width: 150px; /* Tên dịch vụ */
+    }
+    .manager-table th:nth-child(5),
+    .manager-table td:nth-child(5) {
+        width: 150px; /* Hành động */
+    }
+
+    /* Nút Thêm Dịch Vụ */
+    .btn-add-service {
+        background-color: #c11325;
+        color: white;
+        border-color: #c11325;
+        font-weight: bold;
+        padding: 8px 15px;
+        border-radius: 5px;
+        text-decoration: none;
+    }
+    .btn-add-service:hover {
+        background-color: #a00d1f;
+        border-color: #a00d1f;
+        color: white;
+    }
+
+    /* Nút Tìm kiếm */
+    .btn-search {
+        background-color: #c11325;
+        color: white;
+        border-color: #c11325;
+        font-weight: bold;
+    }
+    .btn-search:hover {
+        background-color: #a00d1f;
+        border-color: #a00d1f;
+        color: white;
+    }
+
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="service-list-container">
+    <div class="container-fluid">
+        <div class="content-area shadow">
+
+            <h1 class="text-center" style="font-size: 3rem; color: #c11325; font-weight: 700; margin-bottom: 30px;">
+                QUẢN LÝ DANH SÁCH DỊCH VỤ
+            </h1>
+
+            <form method="GET">
+                <div class="row mb-4 justify-content-center">
+
+                    <div class="col-12 mb-3">
+                        <div class="row align-items-center">
+                            <div class="col-12 text-end">
+                                <a href="{% url 'add_service_item' %}" class="btn btn-add-service">
+                                    + THÊM DỊCH VỤ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-7 col-md-9">
+                        <div class="input-group justify-content-center">
+                            <input type="text" name="q" class="form-control" placeholder="Nhập tên dịch vụ để tìm kiếm" value="{{ query|default_if_none:'' }}" style="max-width: 400px;">
+                            <button type="submit" class="btn btn-search">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            {% if services %}
+            <div class="table-responsive">
+                <table class="manager-table text-center">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">STT</th>
+                            <th>Mã Dịch Vụ</th>
+                            <th>Tên Dịch Vụ</th>
+                            <th>Mô Tả</th>
+                            <th style="width: 150px;">Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for service in services %}
+                        <tr>
+                            <td>{{ forloop.counter }}</td>
+                            <td>DV{{ service.service_id|stringformat:"03d" }}</td>
+                            <td>{{ service.name }}</td>
+                            <td>{{ service.description|truncatechars:100 }}</td>
+                            <td>
+                                <a href="{% url 'edit_service_item' pk=service.service_id %}" class="btn btn-sm btn-dark me-2" style="background-color: black; color: white;">Sửa</a>
+
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-{{ service.service_id }}">
+                                    Xóa
+                                </button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p style="margin-top: 20px; text-align: center;">Không tìm thấy dịch vụ nào phù hợp.</p>
+            {% endif %}
+
+        </div>
+    </div>
+</section>
+
+{% for service in services %}
+<div class="modal fade" id="deleteModal-{{ service.service_id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Xác nhận Xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Bạn có chắc chắn muốn xóa dịch vụ {{ service.name }} (Mã: DV{{ service.service_id|stringformat:"03d" }}) không?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                <form method="POST" action="{% url 'delete_service_item' pk=service.service_id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock content %}

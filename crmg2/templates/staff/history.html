@@ -1,0 +1,62 @@
+{% extends 'staff/base.html' %}
+{% load static %}
+{% block title %}Lịch sử xác nhận | Nhân viên Duyên Spa{% endblock %}
+{% block content %}
+<section class="staff-banner" style="--staff-banner:url('{% static 'images/duyen-banner.jpg' %}');">
+  <div class="staff-banner-content">
+    <span class="staff-eyebrow">LỊCH SỬ NHÂN VIÊN</span>
+    <h1>Lịch sử xác nhận</h1>
+    <p>Các lịch hẹn bạn đã xác nhận khách đến hoặc không đến.</p>
+  </div>
+</section>
+<section class="staff-content" aria-label="Lịch sử xác nhận của tôi">
+  <form method="get" class="staff-filters" aria-label="Lọc lịch sử xác nhận">
+    <label>Ngày xác nhận
+      <input class="staff-input" type="date" name="date" value="{{ chosen_date }}">
+    </label>
+    <label class="staff-search">Tìm kiếm
+      <input class="staff-input" type="search" name="q" value="{{ search }}" placeholder="Mã lịch, tên, SĐT, dịch vụ">
+    </label>
+    <label>Kết quả xác nhận
+      <select class="staff-input" name="status">
+        <option value="all" {% if status == 'all' %}selected{% endif %}>Tất cả</option>
+        <option value="completed" {% if status == 'completed' %}selected{% endif %}>Đã hoàn thành</option>
+        <option value="no_show" {% if status == 'no_show' %}selected{% endif %}>Không đến</option>
+      </select>
+    </label>
+    <button class="staff-btn staff-primary" type="submit">Lọc lịch sử</button>
+  </form>
+  <div class="staff-view-tools"><strong class="staff-history-count">{{ page_obj.paginator.count }} lần xác nhận</strong><span class="staff-result-count">Chỉ hiển thị thao tác do tài khoản của bạn thực hiện</span></div>
+  <div class="staff-table-card">
+    <div class="staff-scroll">
+      <table class="staff-table staff-history-table">
+        <thead><tr><th>Mã lịch</th><th>Khách hàng</th><th>Dịch vụ</th><th>Ngày giờ hẹn</th><th>Kết quả</th><th>Khách thực tế</th><th>Thời điểm xác nhận</th></tr></thead>
+        <tbody>
+        {% for r in records %}
+        <tr>
+          <td class="staff-code" data-label="Mã lịch">DS-{{ r.booking_id }}</td>
+          <td data-label="Khách hàng"><strong>{{ r.name }}</strong><small>{{ r.phone }}</small></td>
+          <td data-label="Dịch vụ">{{ r.service }}</td>
+          <td data-label="Ngày giờ hẹn">{{ r.day|date:'d/m/Y' }}<small>{{ r.hour }}</small></td>
+          <td data-label="Kết quả"><span class="staff-status {{ r.status }}">{{ r.label }}</span></td>
+          <td data-label="Khách thực tế">{{ r.actual }} người</td>
+          <td data-label="Thời điểm xác nhận">{{ r.confirmed_at|date:'d/m/Y' }}<small>{{ r.confirmed_at|date:'H:i' }}</small></td>
+        </tr>
+        {% empty %}<tr><td class="staff-empty" colspan="7">Bạn chưa có lịch sử xác nhận phù hợp.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% if page_obj.has_other_pages %}
+  <nav class="staff-pagination" aria-label="Chuyển trang lịch sử">
+    {% if page_obj.has_previous %}
+      <a href="?date={{ chosen_date|urlencode }}&amp;q={{ search|urlencode }}&amp;status={{ status }}&amp;page={{ page_obj.previous_page_number }}">Trang trước</a>
+    {% endif %}
+    <span>Trang {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?date={{ chosen_date|urlencode }}&amp;q={{ search|urlencode }}&amp;status={{ status }}&amp;page={{ page_obj.next_page_number }}">Trang sau</a>
+    {% endif %}
+  </nav>
+  {% endif %}
+</section>
+{% endblock %}

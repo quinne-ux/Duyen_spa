@@ -1,0 +1,539 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Lịch hẹn của tôi | Duyên Spa{% endblock title %}
+{% block body_class %}ds-inner-page ds-booking-list-page{% endblock body_class %}
+{% block legacy_css %}{% endblock legacy_css %}
+{% block legacy_js %}{% endblock legacy_js %}
+
+{% block extra_css %}
+<style>
+
+body.ds-booking-list-page {
+    margin: 0;
+    background: #faf7ef;
+    color: #17452e;
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+}
+
+.ds-booking-list-page .ds-main {
+    padding-top: var(--ds-head, 76px);
+}
+
+.mb-container {
+    width: min(1160px, calc(100% - 40px));
+    margin: 0 auto;
+}
+
+/* BANNER */
+
+.mb-hero {
+    min-height: 230px;
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    background: #efe6d7;
+    overflow: hidden;
+}
+
+.mb-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 42%;
+    z-index: -2;
+    background:
+        url("{% static 'images/duyen-banner.jpg' %}")
+        center / cover no-repeat;
+}
+
+.mb-hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(
+        90deg,
+        #f4ecdf 0%,
+        #f4ecdf 38%,
+        #f4ecdfdf 52%,
+        #f4ecdf20 80%
+    );
+}
+
+.mb-hero-inner {
+    padding: 42px 0;
+}
+
+.mb-eyebrow {
+    font-size: 11px;
+    letter-spacing: 3px;
+    font-weight: 700;
+    color: #64826b;
+}
+
+.mb-hero h1 {
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: clamp(28px, 3vw, 42px);
+    line-height: 1.4;
+    font-weight: 600;
+    color: #17452e;
+    margin: 10px 0 8px;
+}
+
+.mb-hero p {
+    max-width: 450px;
+    color: #69746a;
+    font-size: 13px;
+    line-height: 1.8;
+    margin: 0;
+}
+
+/* KHUNG DANH SÁCH */
+
+.mb-section {
+    padding: 40px 0 70px;
+}
+
+.mb-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+}
+
+.mb-toolbar h2 {
+    font-family: 'Be Vietnam Pro', Arial, sans-serif;
+    font-size: 21px;
+    font-weight: 600;
+    color: #17452e;
+    margin: 0;
+}
+
+.mb-count {
+    color: #718171;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.mb-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    background: #17452e;
+    color: #fff !important;
+    border: 1px solid #17452e;
+    border-radius: 99px;
+    padding: 11px 18px;
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.mb-btn:hover {
+    background: #285c3e;
+}
+
+/* BẢNG LỊCH HẸN */
+
+.mb-table-scroll {
+    overflow-x: auto;
+    border: 1px solid #e6e1d7;
+    border-radius: 16px;
+    background: #fffdf8;
+    box-shadow: 0 5px 22px #17452e09;
+}
+
+.mb-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.mb-table th {
+    background: #e9eee4;
+    color: #17452e;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    padding: 18px 16px;
+}
+
+.mb-table td {
+    padding: 20px 16px;
+    border-top: 1px solid #ecebe3;
+    vertical-align: middle;
+    color: #35483a;
+}
+
+.mb-table tr:hover td {
+    background: #fcfbf6;
+}
+
+.mb-table .mb-index {
+    width: 62px;
+    color: #78917a;
+}
+
+.mb-service-name {
+    display: block;
+    color: #17452e;
+    font-weight: 600;
+}
+
+.mb-datetime {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mb-hour {
+    font-weight: 700;
+    color: #17452e;
+}
+
+.mb-people {
+    color: #64826b;
+    font-size: 12px;
+}
+
+/* TRẠNG THÁI LỊCH HẸN */
+
+.mb-status {
+    display: inline-block;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+    background: #eef0e8;
+    color: #476147;
+}
+
+.mb-status.pending {
+    background: #fff2d9;
+    color: #8a621a;
+}
+
+.mb-status.confirmed {
+    background: #e3eee3;
+    color: #25603b;
+}
+
+.mb-status.completed {
+    background: #e7edf4;
+    color: #3b5d80;
+}
+
+.mb-status.cancelled {
+    background: #eeeae7;
+    color: #78716e;
+}
+
+/* NÚT HỦY */
+
+.mb-cancel {
+    border: 1px solid #b4695f;
+    background: #fffdf8;
+    color: #a0443b;
+    border-radius: 999px;
+    padding: 9px 16px;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.mb-cancel:hover {
+    color: #fff;
+    background: #a0443b;
+}
+
+.mb-no-action {
+    color: #8b958b;
+    font-size: 12px;
+}
+
+.mb-empty {
+    padding: 46px 18px !important;
+    text-align: center;
+    color: #69746a !important;
+}
+
+.mb-empty i {
+    display: block;
+    margin-bottom: 10px;
+    color: #7e967d;
+    font-size: 28px;
+}
+
+.mb-help {
+    margin-top: 16px;
+    color: #69746a;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.mb-notice {
+    background: #eaf0e6;
+    border-radius: 10px;
+    padding: 11px 14px;
+    color: #476147;
+    font-size: 12px;
+    margin-bottom: 22px;
+}
+
+/* ĐIỆN THOẠI */
+
+@media (max-width: 767px) {
+
+    .mb-container {
+        width: calc(100% - 28px);
+    }
+
+    .mb-hero {
+        min-height: 195px;
+    }
+
+    .mb-hero::after {
+        background: linear-gradient(
+            90deg,
+            #f4ecdf 0%,
+            #f4ecdfed 57%,
+            #f4ecdf85 100%
+        );
+    }
+
+    .mb-section {
+        padding: 25px 0 55px;
+    }
+
+    .mb-toolbar h2 {
+        font-size: 18px;
+    }
+
+    .mb-table th,
+    .mb-table td {
+        padding: 14px 12px;
+    }
+
+}
+
+</style>
+{% endblock extra_css %}
+
+
+{% block content %}
+
+<!-- BANNER LỊCH HẸN -->
+
+<section class="mb-hero">
+
+    <div class="mb-container mb-hero-inner">
+
+        <span class="mb-eyebrow">
+            TÀI KHOẢN / LỊCH HẸN
+        </span>
+
+        <h1>Lịch hẹn của tôi</h1>
+
+        <p>
+            Theo dõi các yêu cầu đặt lịch tại Duyên Spa
+            và chủ động hủy lịch khi cần.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- DANH SÁCH LỊCH HẸN -->
+
+<section class="mb-section">
+
+    <div class="mb-container">
+
+        <div class="mb-toolbar">
+
+            <div>
+
+                <h2>Danh sách lịch hẹn</h2>
+
+                <div class="mb-count">
+                    Chỉ hiển thị các lịch hẹn của bạn.
+                </div>
+
+            </div>
+
+            <a class="mb-btn"
+               href="{% url 'trial_booking' %}">
+
+                <i class="fa fa-calendar-plus-o"></i>
+                Đặt lịch mới
+
+            </a>
+
+        </div>
+
+
+        {% if guest_link %}
+
+        <p class="mb-notice">
+            Đây là liên kết quản lý riêng cho một lịch hẹn.
+            Không chia sẻ liên kết này với người khác.
+        </p>
+
+        {% endif %}
+
+
+        <div class="mb-table-scroll">
+
+            <table class="mb-table">
+
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Dịch vụ</th>
+                        <th>Ngày và giờ hẹn</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    {% for item in bookings %}
+
+                    <tr>
+
+                        <td class="mb-index">
+                            {{ item.index }}
+                        </td>
+
+                        <td>
+                            <span class="mb-service-name">
+                                {{ item.obj.service }}
+                            </span>
+                        </td>
+
+                        <td>
+
+                            <div class="mb-datetime">
+
+                                <span>
+                                    {{ item.obj.register_date|date:"d/m/Y" }}
+                                </span>
+
+                                {% if item.obj.appointment_time %}
+
+                                <span class="mb-hour">
+                                    {{ item.obj.appointment_time|time:"H:i" }}
+                                </span>
+
+                                {% else %}
+
+                                <span class="mb-no-action">
+                                    Chưa cập nhật giờ
+                                </span>
+
+                                {% endif %}
+
+                                <span class="mb-people">
+                                    <i class="fa fa-users"></i>
+                                    {{ item.obj.party_size }} người
+                                </span>
+
+                            </div>
+
+                        </td>
+
+                        <td>
+
+         <span class="mb-status {{ item.obj.status }}">
+
+    {% if item.obj.status == 'confirmed' %}
+
+        Đặt lịch thành công
+
+    {% else %}
+
+        {{ item.obj.get_status_display }}
+
+    {% endif %}
+
+</span>
+
+                        </td>
+
+                        <td>
+
+                            {% if item.can_cancel %}
+
+                            <form method="post"
+                                  action="{{ item.cancel_action }}"
+                                  onsubmit="return confirm('Bạn muốn hủy lịch hẹn này?');">
+
+                                {% csrf_token %}
+
+                                <button type="submit"
+                                        class="mb-cancel">
+                                    Hủy lịch
+                                </button>
+
+                            </form>
+
+                            {% else %}
+
+                                <span class="mb-no-action">
+
+                                    {% if item.obj.status == 'cancelled' %}
+                                        Đã hủy
+                                    {% elif item.obj.status == 'completed' %}
+                                        Đã hoàn thành
+                                    {% else %}
+                                        Không khả dụng
+                                    {% endif %}
+
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="5" class="mb-empty">
+
+                            <i class="fa fa-calendar-o"></i>
+                            Bạn chưa có lịch hẹn nào.
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <p class="mb-help">
+            Bạn có thể hủy lịch đang chờ hoặc đã xác nhận.
+            Khi hủy thành công, số chỗ đã đặt
+            sẽ được trả lại cho khung giờ đó.
+        </p>
+
+    </div>
+
+</section>
+
+{% endblock content %}

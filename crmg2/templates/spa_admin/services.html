@@ -1,0 +1,418 @@
+
+{% extends 'spa_admin/base.html' %}
+{% load static %}
+
+{% block admin_content %}
+
+<style>
+    /* =========================================
+       DUYÊN SPA - QUẢN LÝ DỊCH VỤ
+       TỐI ƯU HIỂN THỊ HÌNH ẢNH
+       ========================================= */
+
+    .adm-service-grid .adm-service-card .adm-service-visual {
+        position: relative;
+        width: 100%;
+        height: 250px;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #e9eee6;
+        border-radius: 14px 14px 0 0;
+        isolation: isolate;
+    }
+
+    /*
+       Ảnh nền:
+       Lấp đầy khung bằng chính bức ảnh,
+       làm mờ nhẹ để không có khoảng trống khó nhìn.
+    */
+
+    .adm-service-grid .adm-service-photo-back {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: blur(15px) brightness(0.95);
+        transform: scale(1.12);
+        opacity: 0.48;
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    /*
+       Ảnh chính:
+       Giữ nguyên tỷ lệ, không cắt ảnh.
+    */
+
+    .adm-service-grid .adm-service-photo {
+        position: relative;
+        z-index: 1;
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+        transition: transform 0.35s ease;
+    }
+
+    /* Hiệu ứng nhẹ khi rê chuột */
+
+    .adm-service-grid .adm-service-card:hover
+    .adm-service-photo {
+        transform: scale(1.015);
+    }
+
+    /* Khi dịch vụ chưa có ảnh */
+
+    .adm-service-grid .adm-service-no-photo {
+        position: relative;
+        z-index: 1;
+        font-size: 34px;
+        color: #73997b;
+    }
+
+    /* Màn hình tablet */
+
+    @media (max-width: 1200px) {
+        .adm-service-grid
+        .adm-service-card
+        .adm-service-visual {
+            height: 235px;
+        }
+    }
+
+    /* Màn hình điện thoại */
+
+    @media (max-width: 767px) {
+        .adm-service-grid
+        .adm-service-card
+        .adm-service-visual {
+            height: 220px;
+        }
+    }
+
+</style>
+
+
+<!-- =========================================
+     TIÊU ĐỀ TRANG QUẢN LÝ DỊCH VỤ
+     ========================================= -->
+
+<div class="adm-head">
+
+    <div>
+
+        <div class="adm-eyebrow">
+            DỊCH VỤ SPA
+        </div>
+
+        <h1>Quản lý dịch vụ</h1>
+
+        <p>
+            Quản lý tên, giá, mô tả và trạng thái
+            hiển thị của dịch vụ.
+        </p>
+
+    </div>
+
+    <a class="adm-btn primary"
+       href="{% url 'spa_admin_services' %}#serviceEditor">
+
+        ＋ Thêm dịch vụ
+
+    </a>
+
+</div>
+
+
+<!-- =========================================
+     DANH SÁCH DỊCH VỤ
+     ========================================= -->
+
+<div class="adm-service-grid">
+
+    {% for s in rows %}
+
+    <article class="adm-service-card">
+
+        <!-- HÌNH ẢNH DỊCH VỤ -->
+
+        <div class="adm-service-visual">
+
+            {% if s.image %}
+
+                <!-- Ảnh nền làm mờ -->
+
+                <img
+                    src="{% static s.image %}"
+                    alt=""
+                    aria-hidden="true"
+                    class="adm-service-photo-back"
+                    loading="lazy"
+                >
+
+                <!-- Ảnh chính hiển thị đầy đủ -->
+
+                <img
+                    src="{% static s.image %}"
+                    alt="{{ s.name }}"
+                    class="adm-service-photo"
+                    loading="lazy"
+                >
+
+            {% else %}
+
+                <i class="fa fa-leaf adm-service-no-photo"
+                   aria-hidden="true"></i>
+
+            {% endif %}
+
+        </div>
+
+
+        <!-- THÔNG TIN DỊCH VỤ -->
+
+        <div class="adm-service-body">
+
+            <div class="adm-service-title">
+
+                <h2>
+                    {{ s.name }}
+                </h2>
+
+                <span class="adm-pill {% if s.is_active %}confirmed{% else %}cancelled{% endif %}">
+
+                    {% if s.is_active %}
+
+                        Đang hiển thị
+
+                    {% else %}
+
+                        Tạm ẩn
+
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+            <!-- MÔ TẢ DỊCH VỤ -->
+
+            <p>
+                {{ s.description|truncatechars:115 }}
+            </p>
+
+
+            <!-- GIÁ VÀ NÚT CHỈNH SỬA -->
+
+            <div class="adm-service-bottom">
+
+    <strong>{{ s.price }}</strong>
+
+    <div style="
+        display:flex;
+        align-items:center;
+        gap:8px;
+        flex-wrap:wrap;
+    ">
+
+        <!-- NÚT CHỈNH SỬA -->
+
+        <a class="adm-btn"
+           href="{% url 'spa_admin_services' %}?edit={{ s.slug }}#serviceEditor">
+
+            Chỉnh sửa
+
+        </a>
+
+        <!-- NÚT XÓA DỊCH VỤ TỰ THÊM -->
+
+        {% if s.can_delete %}
+
+        <form method="post"
+              action="{% url 'spa_admin_service_delete' %}"
+              style="margin:0;"
+              onsubmit="return confirm('Bạn chắc chắn muốn xóa vĩnh viễn dịch vụ này?');">
+
+            {% csrf_token %}
+
+            <input
+                type="hidden"
+                name="slug"
+                value="{{ s.slug }}"
+            >
+
+            <button
+                type="submit"
+                class="adm-btn"
+                style="
+                    color:#a0443b;
+                    border-color:#e8c5c0;
+                ">
+
+                <i class="fa fa-trash-o"></i>
+                Xóa
+
+            </button>
+
+        </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+    </article>
+
+    {% empty %}
+
+        <p class="adm-empty">
+            Chưa có dịch vụ.
+        </p>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- =========================================
+     THÊM VÀ CHỈNH SỬA DỊCH VỤ
+     ========================================= -->
+
+<section class="adm-panel" id="serviceEditor">
+
+    <div class="adm-panel-head">
+
+        <h2>
+
+            {% if edit %}
+
+                Chỉnh sửa: {{ edit.name }}
+
+            {% else %}
+
+                Thêm dịch vụ mới
+
+            {% endif %}
+
+        </h2>
+
+        {% if edit %}
+
+            <a href="{% url 'spa_admin_services' %}#serviceEditor">
+                Thêm mới
+            </a>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- FORM LƯU DỊCH VỤ -->
+
+    <form method="post"
+          action="{% url 'spa_admin_service_save' %}">
+
+        {% csrf_token %}
+
+        <input
+            type="hidden"
+            name="slug"
+            value="{% if edit %}{{ edit.slug }}{% endif %}"
+        >
+
+
+        <div class="adm-form-grid">
+
+            <!-- TÊN DỊCH VỤ -->
+
+            <label class="full">
+
+                Tên dịch vụ *
+
+                <input
+                    class="adm-input"
+                    name="name"
+                    required
+                    maxlength="100"
+                    value="{% if edit %}{{ edit.name }}{% endif %}"
+                >
+
+            </label>
+
+
+            <!-- GIÁ DỊCH VỤ -->
+
+            <label>
+
+                Giá niêm yết (VNĐ) *
+
+<input
+    class="adm-input"
+    type="text"
+    inputmode="numeric"
+    name="price"
+    required
+    maxlength="20"
+    placeholder="Ví dụ: 400.000"
+    value="{% if edit %}{{ edit.raw_price }}{% endif %}"
+>
+
+            </label>
+
+
+            <!-- TRẠNG THÁI DỊCH VỤ -->
+
+            <label class="adm-check spaced">
+
+                <input
+                    type="checkbox"
+                    name="is_active"
+                    {% if not edit or edit.is_active %}checked{% endif %}
+                >
+
+                Đang hiển thị cho khách
+
+            </label>
+
+
+            <!-- MÔ TẢ DỊCH VỤ -->
+
+            <label class="full">
+
+                Mô tả ngắn
+
+                <textarea
+                    class="adm-input"
+                    name="description"
+                    rows="3"
+                >{% if edit %}{{ edit.description }}{% endif %}</textarea>
+
+            </label>
+
+        </div>
+
+
+        <!-- NÚT LƯU -->
+
+        <div class="adm-dialog-actions">
+
+            <button class="adm-btn primary"
+                    type="submit">
+
+                Lưu dịch vụ
+
+            </button>
+
+        </div>
+
+    </form>
+
+</section>
+
+{% endblock admin_content %}

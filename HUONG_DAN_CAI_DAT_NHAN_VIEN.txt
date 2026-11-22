@@ -1,0 +1,44 @@
+DUYEN SPA - NHAN VIEN RIENG (2 TRANG, BANNER NHU TRANG KHACH)
+===========================================================
+
+TAT CA LICH HEN       http://127.0.0.1:8000/nhan-vien/lich-hen/
+LICH SU XAC NHAN      http://127.0.0.1:8000/nhan-vien/lich-su/
+
+Giao dien mau xanh la - kem, font Be Vietnam Pro, su dung anh
+static/images/duyen-banner.jpg va logo static/images/duyen-logo.svg
+DA CO trong website Duyen Spa cua ban.
+
+CHUC NANG
+- Nhan vien xem tat ca lich, loc ngay, trang thai, tim kiem, xem theo gio.
+- Nhan vien chi duoc "Xac nhan den" (chuyen thang sang Da hoan thanh)
+  hoac "Khong den" (sau gio hen).
+- Lich su xac nhan chi hien thi cac thao tac do CHINH tai khoan do lam.
+- Chu spa giu nguyen Dashboard, nguoi dat lich giu nguyen trang khach.
+- Nhan vien khong tao, sua, huy lich hay quan ly dich vu.
+
+YEU CAU
+- Da cai va migrate Admin Dashboard V6.
+- Da co tai khoan nhan vien is_staff=True, is_superuser=False.
+- Da co static/images/duyen-banner.jpg va duyen-logo.svg.
+
+CAC BUOC
+1. DUNG server Django trong PyCharm: Ctrl+C.
+2. SAO LUU ca thu muc du an va db.sqlite3; khong sua ban backup.
+3. Giai nen file ZIP, copy tat ca thu muc crmg2, static va file
+   cai_dat_nhan_vien_duyen_spa.py vao thu muc co manage.py.
+4. Trong Terminal (tai thu muc co manage.py), chay:
+      py cai_dat_nhan_vien_duyen_spa.py
+5. Neu bao "THANH CONG", chay:
+      py manage.py check
+      py manage.py runserver
+6. Mo cua so an danh, dang nhap nhanvien01 tai /dang-nhap/.
+   He thong dua vao /nhan-vien/lich-hen/.
+7. Test bang MOT lich HEN THU (khong xu ly nham lich cua khach that).
+
+QUAN TRONG
+- NEU bao "DUNG CAI DAT", KHONG chay lenh lan hai lan; gui loi.
+- KHONG chay makemigrations/migrate: bo nay khong sua model hay DB.
+- Khong sao chep trang HTML demo vao templates: demo chi co du lieu gia.
+- Trang web khach hang va Dashboard chu spa khong bi thay layout.
+- Trinh cai se luu code cu vao _backup_nhan_vien_<ngay_gio>.
+- Neu banner khong hien, kiem tra file static/images/duyen-banner.jpg.

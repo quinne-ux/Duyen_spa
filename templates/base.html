@@ -1,0 +1,630 @@
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>
+        {% block title %}
+            Duyên Spa | Chăm sóc da & làm đẹp
+        {% endblock title %}
+    </title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          rel="stylesheet">
+
+    {% block legacy_css %}
+        <link rel="stylesheet" href="{% static 'css/animate.css' %}">
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% endblock legacy_css %}
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{% static 'css/duyen-spa.css' %}">
+
+    {% block extra_css %}{% endblock extra_css %}
+
+</head>
+
+
+<body class="{% block body_class %}ds-inner-page{% endblock body_class %}">
+
+{% url 'home' as home_url %}
+{% url 'trial_booking' as booking_url %}
+{% url 'service_list' as services_url %}
+{% url 'login' as login_url %}
+
+
+<!-- =======================================
+     HEADER DUYÊN SPA
+     ======================================= -->
+
+<nav class="navbar navbar-expand-lg fixed-top custom-navbar ds-header"
+     aria-label="Điều hướng chính">
+
+    {% block header %}
+
+    <div class="container ds-nav-wrap">
+
+        <!-- LOGO DUYÊN SPA -->
+
+        <a class="navbar-brand ds-brand"
+           href="{{ home_url }}">
+
+            <img src="{% static 'images/duyen-logo.svg' %}"
+                 alt=""
+                 width="46"
+                 height="46">
+
+            <span>
+                <strong>Duyên Spa</strong>
+            </span>
+
+        </a>
+
+
+        <!-- NÚT MENU TRÊN ĐIỆN THOẠI -->
+
+        <button class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#navbarMenu"
+                aria-controls="navbarMenu"
+                aria-expanded="false"
+                aria-label="Mở menu">
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+
+        <div class="collapse navbar-collapse"
+             id="navbarMenu">
+
+
+            <!-- MENU CHÍNH -->
+
+            <ul class="navbar-nav ds-menu mx-auto">
+
+                <!-- THÔNG TIN -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link {% if request.resolver_match.url_name == 'home' %}ds-active{% endif %}"
+                       href="{{ home_url }}">
+
+                        Thông tin
+
+                    </a>
+
+                </li>
+
+
+                <!-- MENU CHỦ SPA VÀ NHÂN VIÊN -->
+
+                {% if user.is_authenticated and user.is_staff %}
+
+                    {% if user.is_superuser %}
+
+                        <!-- CHỦ SPA -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               href="{% url 'spa_admin_home' %}">
+
+                                Bảng quản trị
+
+                            </a>
+
+                        </li>
+
+                    {% else %}
+
+                        <!-- NHÂN VIÊN -->
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               href="{% url 'spa_admin_bookings' %}">
+
+                                Xem lịch hẹn
+
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+
+                {% else %}
+
+
+                    <!-- MENU DÀNH CHO KHÁCH HÀNG -->
+
+                    <li class="nav-item">
+
+                        <a class="nav-link {% if request.resolver_match.url_name == 'service_list' or request.resolver_match.url_name == 'spa_service_detail' %}ds-active{% endif %}"
+                           href="{{ services_url }}">
+
+                            Dịch vụ
+
+                        </a>
+
+                    </li>
+
+
+                    <li class="nav-item">
+
+                        <a class="nav-link {% if request.resolver_match.url_name == 'trial_booking' %}ds-active{% endif %}"
+                           href="{{ booking_url }}">
+
+                            Đặt lịch
+
+                        </a>
+
+                    </li>
+
+
+                    <!-- LỊCH HẸN CỦA KHÁCH HÀNG -->
+
+                    {% if user.is_authenticated and user_has_bookings %}
+
+                        <li class="nav-item">
+
+                            <a class="nav-link"
+                               href="{% url 'booking_list' %}">
+
+                                Lịch của tôi
+
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+                {% endif %}
+
+            </ul>
+
+
+
+            <!-- =======================================
+                 TÀI KHOẢN VÀ ĐĂNG XUẤT
+                 ======================================= -->
+
+            <div class="ds-nav-actions">
+
+                {% if user.is_authenticated %}
+
+
+                    <!-- TÊN TÀI KHOẢN -->
+
+                    {% if user.is_staff %}
+
+                        <span class="ds-account-link">
+
+                            <i class="fa fa-user"
+                               aria-hidden="true"></i>
+
+                            {{ user.username }}
+
+                        </span>
+
+                    {% else %}
+
+                        <a class="ds-account-link"
+                           href="{% url 'profile' username=user.username %}">
+
+                            <i class="fa fa-user"
+                               aria-hidden="true"></i>
+
+                            {{ user.username }}
+
+                        </a>
+
+                    {% endif %}
+
+
+                    <!-- ĐĂNG XUẤT -->
+
+                    <a class="ds-account-link"
+                       href="{% url 'logout' %}">
+
+                        Đăng xuất
+
+                    </a>
+
+
+                {% else %}
+
+
+                    <!-- KHÁCH CHƯA ĐĂNG NHẬP -->
+
+                    <a class="ds-account-link"
+                       href="{{ login_url }}">
+
+                        <i class="fa fa-user"
+                           aria-hidden="true"></i>
+
+                        Đăng nhập
+
+                    </a>
+
+
+                {% endif %}
+
+
+
+                <!-- ===================================
+                     NÚT ĐẶT LỊCH DÀNH CHO KHÁCH
+
+                     KHÔNG HIỂN THỊ NÚT BẢNG QUẢN TRỊ
+                     TRÙNG LẶP Ở BÊN PHẢI
+                     =================================== -->
+
+                {% if not user.is_staff %}
+
+                    <a class="ds-btn ds-btn-primary"
+                       href="{{ booking_url }}">
+
+                        <i class="fa fa-calendar-check-o"
+                           aria-hidden="true"></i>
+
+                        Đặt lịch ngay
+
+                    </a>
+
+                {% endif %}
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+    {% endblock header %}
+
+</nav>
+
+
+
+<!-- =======================================
+     NỘI DUNG CHÍNH
+     ======================================= -->
+
+<main class="ds-main">
+
+    {% if messages %}
+
+        <div class="container ds-messages">
+
+            {% for message in messages %}
+
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                     role="alert">
+
+                    {{ message }}
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert"
+                            aria-label="Đóng">
+                    </button>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    {% endif %}
+
+
+
+    {% block content %}
+
+        <section class="home wow flash"
+                 id="home">
+
+            {% block home_section %}
+            {% endblock home_section %}
+
+        </section>
+
+
+        <section class="about"
+                 id="about">
+
+            {% block about_section %}
+            {% endblock about_section %}
+
+        </section>
+
+
+        <section class="service"
+                 id="service">
+
+            {% block service_section %}
+            {% endblock service_section %}
+
+        </section>
+
+
+        <section class="classes"
+                 id="classes">
+
+            {% block classes_section %}
+            {% endblock classes_section %}
+
+        </section>
+
+
+        <section class="start-today">
+
+            {% block start_today_section %}
+            {% endblock start_today_section %}
+
+        </section>
+
+
+        <section class="schedule"
+                 id="schedule">
+
+            {% block schedule_section %}
+            {% endblock schedule_section %}
+
+        </section>
+
+
+        <section class="gallery"
+                 id="gallery">
+
+            {% block gallery_section %}
+            {% endblock gallery_section %}
+
+        </section>
+
+
+        <section class="price-package"
+                 id="price">
+
+            {% block price_section %}
+            {% endblock price_section %}
+
+        </section>
+
+
+        <section class="contact"
+                 id="contact">
+
+            {% block contact_section %}
+            {% endblock contact_section %}
+
+        </section>
+
+    {% endblock content %}
+
+</main>
+
+
+
+<!-- =======================================
+     FOOTER DUYÊN SPA
+     ======================================= -->
+
+<footer class="ds-footer"
+        id="ds-contact">
+
+    {% block footer %}
+
+    <div class="container ds-footer-grid">
+
+
+        <!-- THÔNG TIN SPA -->
+
+        <div>
+
+            <a class="ds-footer-brand"
+               href="{{ home_url }}">
+
+                {{ spa_public_config.name|default:"Duyên Spa" }}
+
+            </a>
+
+            <p>
+                {{ spa_public_config.slogan|default:"Chăm sóc làn da, nâng niu vẻ đẹp tự nhiên." }}
+            </p>
+
+            <p>
+
+                <i class="fa fa-map-marker"
+                   aria-hidden="true"></i>
+
+                {{ spa_public_config.location|default:"Đà Nẵng, Việt Nam" }}
+
+            </p>
+
+            {% if spa_public_config.phone %}
+
+                <p>
+
+                    <i class="fa fa-phone"
+                       aria-hidden="true"></i>
+
+                    {{ spa_public_config.phone }}
+
+                </p>
+
+            {% endif %}
+
+        </div>
+
+
+
+        <!-- KHÁM PHÁ -->
+
+        <div>
+
+            <h2>Khám phá</h2>
+
+            <a href="{{ home_url }}">
+                Thông tin
+            </a>
+
+            <a href="{{ services_url }}">
+                Dịch vụ
+            </a>
+
+            <a href="{{ booking_url }}">
+                Đặt lịch
+            </a>
+
+        </div>
+
+
+
+        <!-- HỖ TRỢ KHÁCH HÀNG -->
+
+        <div>
+
+            <h2>Hỗ trợ khách hàng</h2>
+
+            <a href="{% url 'complaint_history' %}">
+                Phản hồi khách hàng
+            </a>
+
+            {% if user.is_authenticated and not user.is_staff %}
+
+                <a href="{% url 'profile' username=user.username %}">
+                    Tài khoản của tôi
+                </a>
+
+            {% elif not user.is_authenticated %}
+
+                <a href="{{ login_url }}">
+                    Đăng nhập
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+
+    <!-- BẢN QUYỀN -->
+
+    <div class="container ds-copyright">
+
+        &copy; {% now 'Y' %} Duyên Spa.
+
+    </div>
+
+    {% endblock footer %}
+
+</footer>
+
+
+
+<!-- =======================================
+     JAVASCRIPT
+     ======================================= -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+{% block legacy_js %}
+
+<script src="{% static 'js/wow.min.js' %}"></script>
+
+<script>
+
+    if (window.jQuery) {
+
+        jQuery(function($) {
+
+            $('.accordian-container').on('click', function() {
+
+                $('.accordian-container')
+                    .removeClass('active')
+                    .children('.body')
+                    .slideUp();
+
+                $('.accordian-container .head span')
+                    .removeClass('fa-angle-down')
+                    .addClass('fa-angle-up');
+
+                $(this)
+                    .addClass('active')
+                    .children('.body')
+                    .slideDown();
+
+                $(this)
+                    .find('.head span')
+                    .removeClass('fa-angle-up')
+                    .addClass('fa-angle-down');
+
+            });
+
+
+            $('.go-down').on('click', function(event) {
+
+                var target = this.hash && $(this.hash);
+
+                if (target && target.length) {
+
+                    event.preventDefault();
+
+                    $('html,body').animate(
+                        {
+                            scrollTop: target.offset().top
+                        },
+                        800
+                    );
+
+                }
+
+            });
+
+        });
+
+    }
+
+
+    if (typeof WOW !== 'undefined') {
+
+        new WOW({
+            animateClass: 'animated',
+            offset: 0
+        }).init();
+
+    }
+
+</script>
+
+{% endblock legacy_js %}
+
+
+{% block extra_js %}{% endblock extra_js %}
+
+</body>
+</html>

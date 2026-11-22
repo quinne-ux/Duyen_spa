@@ -1,0 +1,53 @@
+{% load static %}
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ page_title }} | Quản trị Duyên Spa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/spa-admin.css' %}">
+</head>
+<body>
+<div class="adm-shell">
+<aside class="adm-side" id="adminSide">
+  <a class="adm-brand" href="{% url 'spa_admin_home' %}">
+    <img src="{% static 'images/duyen-logo.svg' %}" alt="" width="45" height="45">
+    <span><strong>Duyên Spa</strong><small>HỆ THỐNG QUẢN TRỊ</small></span>
+  </a>
+  <div class="adm-nav-label">VẬN HÀNH</div>
+  <nav class="adm-menu" aria-label="Điều hướng quản trị">
+    {% if owner %}<a class="{% if section == 'dashboard' %}active{% endif %}" href="{% url 'spa_admin_home' %}"><i class="fa fa-th-large"></i> Tổng quan</a>{% endif %}
+    <a class="{% if section == 'bookings' %}active{% endif %}" href="{% url 'spa_admin_bookings' %}"><i class="fa fa-calendar-check-o"></i> {% if owner %}Quản lý lịch hẹn{% else %}Xem lịch hẹn{% endif %}</a>
+    <a class="{% if section == 'history' %}active{% endif %}" href="{% url 'spa_admin_history' %}"><i class="fa fa-history"></i> Lịch sử & trạng thái</a>
+    {% if owner %}
+    <a class="{% if section == 'slots' %}active{% endif %}" href="{% url 'spa_admin_slots' %}"><i class="fa fa-clock-o"></i> Khung giờ & sức chứa</a>
+    <a class="{% if section == 'services' %}active{% endif %}" href="{% url 'spa_admin_services' %}"><i class="fa fa-leaf"></i> Quản lý dịch vụ</a>
+    <a class="{% if section == 'analytics' %}active{% endif %}" href="{% url 'spa_admin_analytics' %}"><i class="fa fa-bar-chart"></i> Báo cáo & phân tích</a>
+    <div class="adm-nav-label second">HỆ THỐNG</div>
+    <a class="{% if section == 'staff' %}active{% endif %}" href="{% url 'spa_admin_staff' %}"><i class="fa fa-users"></i> Nhân viên & phân quyền</a>
+    <a class="{% if section == 'settings' %}active{% endif %}" href="{% url 'spa_admin_settings' %}"><i class="fa fa-cog"></i> Thiết lập Spa</a>
+    {% endif %}
+  </nav>
+  <div class="adm-side-bottom">
+    <div class="adm-avatar">{{ request.user.username|slice:":1"|upper }}</div>
+    <div><strong>{{ request.user.username }}</strong><small>{% if owner %}Chủ spa · Quản trị{% else %}Nhân viên · Chỉ xem{% endif %}</small></div>
+  </div>
+</aside>
+<main class="adm-main">
+  <header class="adm-topbar">
+    <div class="adm-top-left"><button type="button" id="openAdminNav" aria-label="Mở menu"><i class="fa fa-bars"></i></button><span class="adm-breadcrumb">Duyên Spa <span>/</span> <b>{{ page_title }}</b></span></div>
+    <div class="adm-top-right"><a class="adm-site-link" href="{% url 'home' %}" target="_blank" rel="noopener"><i class="fa fa-external-link"></i> Xem website</a><a class="adm-logout" href="{% url 'logout' %}">Đăng xuất</a><span class="adm-avatar small">{{ request.user.username|slice:":1"|upper }}</span></div>
+  </header>
+  <div class="adm-content">
+    {% if messages %}<div class="adm-messages">{% for msg in messages %}<div class="adm-alert {% if msg.tags %}{{ msg.tags }}{% endif %}">{{ msg }}</div>{% endfor %}</div>{% endif %}
+    {% block admin_content %}{% endblock admin_content %}
+  </div>
+</main>
+</div>
+<div id="adminOverlay" class="adm-overlay"></div>
+<script src="{% static 'js/spa-admin.js' %}" defer></script>
+{% block extra_js %}{% endblock extra_js %}
+</body>
+</html>

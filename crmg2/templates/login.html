@@ -1,0 +1,117 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Đăng nhập | Duyên Spa{% endblock title %}
+{% block body_class %}ds-inner-page ds-auth-page{% endblock body_class %}
+{% block legacy_css %}{% endblock legacy_css %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/duyen-auth.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+<section class="spa-auth">
+  <div class="spa-auth-card">
+
+    <div class="spa-auth-form">
+
+      <p class="spa-auth-kicker">
+        DUYÊN SPA · CHĂM SÓC DA & LÀM ĐẸP
+      </p>
+
+      <h1>Đăng nhập</h1>
+      <p class="spa-auth-subtitle">Chào mừng bạn trở lại Duyên Spa. Vui lòng đăng nhập để tiếp tục.</p>
+
+      <form action="{% url 'login' %}{% if request.GET.next %}?next={{ request.GET.next|urlencode }}{% endif %}" method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="spa-auth-alert" role="alert">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+
+          {% if field.is_hidden %}
+            {{ field }}
+          {% else %}
+
+          <div class="spa-auth-field">
+
+            <label for="{{ field.id_for_label }}">
+              {% if field.name == 'username' %}
+                Tên đăng nhập
+              {% elif field.name == 'password' or field.name == 'password1' %}
+                Mật khẩu
+              {% elif field.name == 'password2' %}
+                Nhập lại mật khẩu
+              {% elif field.name == 'first_name' %}
+                Họ
+              {% elif field.name == 'last_name' %}
+                Tên
+              {% else %}
+                {{ field.label }}
+              {% endif %}
+            </label>
+
+            {{ field }}
+
+            {% if field.errors %}
+            <div class="spa-auth-error" role="alert">
+              {{ field.errors }}
+            </div>
+            {% endif %}
+
+            {% if field.help_text %}
+            <div class="spa-auth-help">
+              {{ field.help_text }}
+            </div>
+            {% endif %}
+
+          </div>
+
+          {% endif %}
+        {% endfor %}
+
+        <button class="spa-auth-submit" type="submit">
+          Đăng nhập
+          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+        </button>
+
+      </form>
+
+      <p class="spa-auth-switch">Chưa có tài khoản? <a href="{% url 'register' %}">Đăng ký ngay</a></p>
+
+    </div>
+
+    <aside class="spa-auth-photo"
+      style="background-image:
+        linear-gradient(
+          0deg,
+          rgba(14,50,31,.68),
+          rgba(14,50,31,0) 65%
+        ),
+        url('{% static 'images/duyen-banner.jpg' %}');">
+
+      <div class="spa-auth-photo-content">
+        <span>DUYÊN SPA</span>
+
+        <h2>
+          Chăm sóc làn da,<br>
+          nâng niu vẻ đẹp tự nhiên.
+        </h2>
+
+        <p>
+          Không gian thư giãn dành riêng cho bạn.
+        </p>
+      </div>
+
+    </aside>
+
+  </div>
+</section>
+
+{% endblock content %}

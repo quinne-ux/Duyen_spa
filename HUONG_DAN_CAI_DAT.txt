@@ -1,0 +1,90 @@
+DUYÊN SPA - GÓI NÂNG CẤP QUẢN TRỊ THEO DEMO V6
+============================================
+
+1. PHẠM VI
+- Dashboard dành cho Chủ spa tại /quan-ly/
+- Quản lý lịch: /quan-ly/dat-lich/
+- Lịch sử & trạng thái: /quan-ly/lich-su/
+- Khung giờ và sức chứa: /quan-ly/khung-gio/
+- Quản lý 5 dịch vụ và thêm dịch vụ: /quan-ly/dich-vu/
+- Báo cáo 30 ngày: /quan-ly/bao-cao/
+- Nhân viên (chỉ xem): /quan-ly/nhan-vien/
+- Cài đặt thông tin cơ sở: /quan-ly/cai-dat/
+
+2. CHUẨN BỊ
+- Đảm bảo website Duyên Spa của bạn đang đặt lịch bình thường.
+- Ở models.py, model TrialBooking phải có:
+      appointment_time = models.TimeField(null=True, blank=True)
+- Sao lưu CẢ thư mục dự án, đặc biệt db.sqlite3 và thư mục migrations.
+- Dừng Django server trong PyCharm (Ctrl+C).
+- Chưa thay hoặc xóa bảng dữ liệu.
+
+3. CÀI ĐẶT
+- Giải nén gói ZIP và SAO CHÉP CÁC NỘI DUNG BÊN TRONG vào thư mục gốc dự án,
+  nơi có manage.py. Giữ đúng cấu trúc thư mục con crmg2, static.
+- Gói gồm chủ yếu file MỚI, không có database và không thay tệp cũ khi giải nén,
+  trừ khi bạn đã từng chạy một lần cài tương tự.
+- Trong Terminal PyCharm, chuyển đến thư mục chứa manage.py.
+- Chạy LẦN LƯỢT:
+      py cai_dat_admin_duyen_spa.py
+      py manage.py makemigrations crmg2
+  KIỂM TRA: Django chỉ nên tạo bảng Spa... mới và thay đổi lựa chọn trạng thái.
+  Nếu thấy thao tác RemoveField (đặc biệt appointment_time) hoặc RemoveModel
+  trong file migration mới, DỪNG trước khi migrate và gửi file migration để xem.
+  Nếu mọi thay đổi đúng, chạy tiếp:
+      py manage.py migrate
+      py manage.py check
+      py manage.py runserver
+- Mở http://127.0.0.1:8000/quan-ly/
+- Nếu chương trình cài báo DỪNG, KHÔNG tiếp tục makemigrations/migrate;
+  gửi dòng lỗi để kiểm tra vị trí code hiện tại. Chương trình kiểm tra các
+  vị trí cũ trước khi ghi, nên không ghi đè nửa chừng khi thiếu vị trí.
+
+4. QUYỀN
+- Superuser: Dashboard, tạo lịch thủ công, Xác nhận đến, Không đến, dịch vụ,
+  số chỗ, báo cáo, nhân viên, cài đặt.
+- is_staff=True và is_superuser=False: chỉ có trang Xem lịch và Lịch sử.
+  Mọi endpoint ghi mới đều kiểm tra superuser từ Django.
+- Khách thường không thể truy cập quản trị.
+- Tạo nhân viên qua /admin/auth/user/add/ (chỉ chủ) và chỉ bật 'Staff status';
+  KHÔNG bật 'Superuser status'. Không cần cấp bất kỳ quyền sửa đổi nào.
+
+5. TRẠNG THÁI
+- 'Đặt lịch thành công' => confirmed, giữ chỗ.
+- Chủ bấm 'Xác nhận đến' + nhập số người thực tế => completed ngay.
+- Chủ bấm 'Không đến' => no_show, chỉ sau giờ hẹn.
+- Khách tự hủy => cancelled; nút hủy của khách vẫn giữ như cũ.
+- Không có bước check-in riêng. Chủ không có nút Hủy trong quản lý.
+
+6. SỐ LIỆU
+- Tổng số lịch hẹn = đếm tất cả lịch trong ngày, kể cả đã hủy/không đến.
+- Số khách dự kiến = tổng party_size của lịch chưa hủy và không đến.
+- Khách thực tế = số khách chủ đã xác nhận; chỉ tính record bổ sung.
+- Hoàn thành = số lịch chuyển trạng thái completed.
+- Doanh thu không hiển thị, vì chưa có dữ liệu thanh toán.
+- Dữ liệu lịch cũ vẫn được giữ nguyên; không tự giả định số khách thực tế
+  đối với lịch đã hoàn thành nhưng chưa có bản ghi xác nhận.
+
+7. DỊCH VỤ
+- 5 dịch vụ mặc định trong SPA_SERVICES được hiển thị trên giao diện quản trị.
+- Sửa tên/giá/mô tả/ẩn dịch vụ sẽ có hiệu lực ở trang chủ, danh sách dịch vụ,
+  trang chi tiết dịch vụ và form đặt lịch.
+- Lịch cũ vẫn giữ tên dịch vụ tại thời điểm khách đặt.
+- Dịch vụ thêm mới sử dụng ảnh mặc định để không phá thiết kế cũ; gói này
+  chưa hỗ trợ upload ảnh riêng từ Dashboard.
+
+8. BẢO VỆ DỮ LIỆU / KHÔI PHỤC
+- Script sao lưu 8 file cũ vào thư mục _backup_duyen_admin_YYYYMMDD_HHMMSS.
+- Script KHÔNG xóa / ghi đè db.sqlite3, không tạo/xóa tài khoản.
+- makemigrations/migrate sẽ tạo bảng bổ sung; phải sao lưu DB trước khi chạy.
+- Muốn quay lại phiên bản cũ, cần khôi phục 8 file sao lưu và db.sqlite3
+  từ bản sao lưu trước migrate. Không xóa migration bằng tay.
+
+9. GIỚI HẠN CẦN BIẾT
+- Website trước đây giới hạn cứng tối đa 3 người/giờ, nên cấu hình mới
+  chỉ cho hạ xuống 0, 1, 2 hoặc giữ 3. Muốn 4 khách/giờ cần sửa quy tắc
+  ràng buộc công suất trên DB trước, không chỉ đổi số trên màn hình.
+- Dự án hiện dùng SQLite, chưa tối ưu cho lưu lượng đặt đồng thời rất lớn.
+- Báo cáo chủ yếu tính theo ngày hẹn, không phải ngày thao tác tạo đơn.
+- Gói được đối chiếu với code người dùng từng chia sẻ; nếu phiên bản đã sửa
+  khác cấu trúc, script sẽ dừng thay vì tự ý ghi đè toàn bộ dự án.

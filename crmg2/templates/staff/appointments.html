@@ -1,0 +1,103 @@
+{% extends 'staff/base.html' %}
+{% load static %}
+{% block title %}Tất cả lịch hẹn | Nhân viên Duyên Spa{% endblock %}
+{% block content %}
+<section class="staff-banner" style="--staff-banner:url('{% static 'images/duyen-banner.jpg' %}');">
+  <div class="staff-banner-content">
+    <span class="staff-eyebrow">LỊCH HẸN DUYÊN SPA</span>
+    <h1>Tất cả lịch hẹn</h1>
+    <p>Theo dõi lịch đặt và cập nhật khi khách đến spa.</p>
+  </div>
+</section>
+
+<section class="staff-content" aria-label="Danh sách lịch hẹn">
+  <form method="get" class="staff-filters" aria-label="Lọc lịch hẹn">
+    <label>Ngày hẹn
+      <input class="staff-input" type="date" name="date" value="{{ day|date:'Y-m-d' }}" required>
+    </label>
+    <label class="staff-search">Tìm kiếm
+      <input class="staff-input" type="search" name="q" value="{{ search }}" placeholder="Tên khách, số điện thoại, dịch vụ">
+    </label>
+    <label>Trạng thái
+      <select class="staff-input" name="status">
+        <option value="all" {% if status == 'all' %}selected{% endif %}>Tất cả</option>
+        {% for key, label in status_labels.items %}
+        <option value="{{ key }}" {% if status == key %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button class="staff-btn staff-primary" type="submit">Lọc lịch</button>
+  </form>
+
+  <div class="staff-view-tools">
+    <div class="staff-tabs" role="group" aria-label="Chế độ hiển thị">
+      <button class="staff-tab active" type="button" data-staff-view="list" aria-pressed="true">Danh sách</button>
+      <button class="staff-tab" type="button" data-staff-view="slots" aria-pressed="false">Theo giờ</button>
+    </div>
+    <span class="staff-result-count">{{ rows|length }} lịch hẹn phù hợp</span>
+  </div>
+
+  <div id="staffList" class="staff-table-card">
+    <div class="staff-scroll">
+      <table class="staff-table">
+        <thead><tr><th>Mã</th><th>Khách hàng</th><th>Dịch vụ</th><th>Thời gian</th><th>Số người</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+        <tbody>
+        {% for r in rows %}
+        <tr>
+          <td class="staff-code" data-label="Mã">DS-{{ r.id }}</td>
+          <td data-label="Khách hàng"><strong>{{ r.name }}</strong><small>{{ r.phone }}</small></td>
+          <td data-label="Dịch vụ">{{ r.service }}<small>{{ r.source }}</small></td>
+          <td data-label="Thời gian">{{ r.day|date:'d/m/Y' }}<small>{{ r.hour }}</small></td>
+          <td data-label="Số người">{{ r.party_size }} người{% if r.actual_arrivals is not None %}<small>Đã đến: {{ r.actual_arrivals }}</small>{% endif %}</td>
+          <td data-label="Trạng thái"><span class="staff-status {{ r.status }}">{{ r.label }}</span></td>
+          <td data-label="Thao tác">
+            {% if r.can_mark %}
+              <div class="staff-row-actions">
+                <button class="staff-mini-btn staff-arrival" type="button"
+                    data-staff-arrival-url="{% url 'staff_arrival' r.id %}"
+                    data-staff-name="{{ r.name }}" data-staff-phone="{{ r.phone }}"
+                    data-staff-party="{{ r.party_size }}">✓ Xác nhận đến</button>
+                {% if r.can_no_show %}
+                <form method="post" action="{% url 'staff_no_show' r.id %}" onsubmit="return confirm('Xác nhận khách không đến lịch DS-{{ r.id }}?');">
+                  {% csrf_token %}
+                  <button class="staff-mini-btn staff-noshow" type="submit">Không đến</button>
+                </form>
+                {% endif %}
+              </div>
+            {% else %}<span class="staff-muted">—</span>{% endif %}
+          </td>
+        </tr>
+        {% empty %}<tr><td class="staff-empty" colspan="7">Không có lịch hẹn phù hợp trong ngày này.</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div id="staffSlots" class="staff-table-card" hidden>
+    <div class="staff-table-title">Khung giờ ngày {{ day|date:'d/m/Y' }}</div>
+    <div class="staff-scroll">
+      <table class="staff-table staff-slot-table">
+        <thead><tr><th>Giờ hẹn</th><th>Khách đã đặt</th><th>Sức chứa</th><th>Chỗ còn trống</th></tr></thead>
+        <tbody>{% for r in cap_rows %}
+          <tr><td data-label="Giờ hẹn"><strong>{{ r.hour }}</strong></td><td data-label="Khách đã đặt">{{ r.used }}</td><td data-label="Sức chứa">{{ r.cap }}</td><td data-label="Chỗ còn trống">{{ r.free }}</td></tr>
+        {% endfor %}</tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<dialog id="staffArrivalDialog" class="staff-dialog" aria-labelledby="staffArrivalTitle">
+  <form method="post" id="staffArrivalForm">
+    {% csrf_token %}
+    <div class="staff-dialog-head"><h2 id="staffArrivalTitle">Xác nhận khách đến</h2><button type="button" id="staffCloseDialog" aria-label="Đóng">×</button></div>
+    <p id="staffArrivalInfo" class="staff-dialog-info"></p>
+    <label class="staff-arrival-count">Số người thực tế đến
+      <input id="staffActualArrivals" class="staff-input" type="number" name="actual_arrivals" required min="1" max="3">
+    </label>
+    <div class="staff-dialog-actions">
+      <button type="button" class="staff-btn" id="staffCancelDialog">Quay lại</button>
+      <button type="submit" class="staff-btn staff-primary">Xác nhận &amp; hoàn thành</button>
+    </div>
+  </form>
+</dialog>
+{% endblock %}
+{% block extra_js %}<script src="{% static 'js/staff-appointments.js' %}" defer></script>{% endblock %}

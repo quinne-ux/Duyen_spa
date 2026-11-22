@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chi Tiết Khiếu Nại - {{ complaint.complaint_id }}{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .complaint-detail-card {
+        background: #fff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        margin-top: 50px;
+    }
+    .detail-row {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+        display: flex;
+    }
+    .detail-row strong {
+        flex: 0 0 250px;
+        color: #c11325;
+        font-weight: 600;
+    }
+    .detail-row span {
+        flex-grow: 1;
+        color: #333;
+        font-family: 'Open Sans', sans-serif;
+    }
+     .status-badge {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+    .status-RECEIVED { background-color: #4CAF50; }
+    .status-IN_PROGRESS { background-color: #FFC107; color: #333;}
+    .status-RESOLVED { background-color: #2196F3; }
+
+    .form-control {
+        border-radius: 0.25rem;
+        border: 1px solid #ccc;
+    }
+    .detail-row[style*="flex-direction: column"] strong {
+        flex: auto !important;
+        margin-bottom: 0px !important;
+        padding-bottom: 0px !important;
+        margin-right: 0px !important;
+        line-height: 1.2;
+        display: block;
+    }
+
+    .detail-row[style*="flex-direction: column"] span {
+        margin-top: 5px !important;
+        line-height: 1.5;
+        display: block;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="container" style="padding-top: 100px; padding-bottom: 50px;">
+    <h2 class="text-dark" style="font-size: 2rem; font-weight: 700; margin-bottom: 30px;">Chi Tiết Khiếu Nại: {{ complaint.complaint_id }}</h2>
+
+    <div class="complaint-detail-card">
+        <h3 style="color: #222; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 20px;">Thông tin Khách hàng</h3>
+        <div class="detail-row">
+            <strong>Họ tên khách hàng:</strong>
+            <span>{{ complaint.name }}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Số điện thoại:</strong>
+            <span>{{ complaint.phone_number|default:"Không có" }}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Email:</strong>
+            <span>{{ complaint.email }}</span>
+        </div>
+
+        <h3 style="color: #222; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; margin-bottom: 20px;">Chi tiết Khiếu nại</h3>
+        <div class="detail-row">
+            <strong>Mã khiếu nại:</strong>
+            <span>{{ complaint.complaint_id }}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Loại khiếu nại:</strong>
+            <span>{{ complaint.get_complaint_type_display }}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Cơ sở:</strong>
+            <span>{{ complaint.get_facility_display|default:"Không rõ" }}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Ngày xảy ra sự cố:</strong>
+            <span>{{ complaint.incident_date|date:"d/m/Y"|default:"Không rõ" }}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Tiêu đề:</strong>
+            <span>{{ complaint.title }}</span>
+        </div>
+        <div class="detail-row" style="flex-direction: column;">
+            <strong style="margin-bottom: 0px;">Nội dung khiếu nại:</strong>
+            <span style="white-space: pre-wrap;">{{ complaint.content }}</span>
+        </div>
+        <h3 style="color: #222; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; margin-bottom: 20px;">Thông tin Xử lý</h3>
+         <div class="detail-row">
+            <strong>Ngày tiếp nhận khiếu nại:</strong>
+            <span>{{ complaint.submitted_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Trạng thái:</strong>
+            <span>
+                <span class="status-badge status-{{ complaint.status }}">
+                    {{ complaint.get_status_display }}
+                </span>
+            </span>
+        </div>
+        <div class="detail-row" style="border-bottom: none;">
+            <strong>Người phụ trách:</strong>
+            <span>{{ complaint.responsible_staff.get_full_name|default:complaint.responsible_staff.username|default:"Chưa có" }}</span>
+        </div>
+
+
+        {% if is_manager %}
+        <h3 style="color: #c11325; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-top: 30px; margin-bottom: 20px;">
+            Cập nhật Xử lý (Nội bộ)
+        </h3>
+        <form method="POST" action="{% url 'update_complaint_status' complaint_id=complaint.complaint_id %}" style="display: flex; gap: 20px; align-items: flex-end; background-color: #f7f7f7; padding: 15px; border-radius: 8px;">
+            {% csrf_token %}
+
+            <div class="form-group" style="flex: 1;">
+                <label for="id_status" style="font-weight: 600;">Trạng thái mới:</label>
+                <select name="new_status" id="id_status" class="form-control" style="padding: 8px; border: 1px solid #ccc; width: 100%;">
+                    {% for key, value in STATUS_CHOICES %}
+                        <option value="{{ key }}" {% if complaint.status == key %}selected{% endif %}>{{ value }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group" style="flex: 1;">
+                <label for="id_staff" style="font-weight: 600;">Người phụ trách:</label>
+                <select name="responsible_staff_id" id="id_staff" class="form-control" style="padding: 8px; border: 1px solid #ccc; width: 100%;">
+                    <option value="">-- Chọn Nhân viên --</option>
+                    {% for user in staff_users %}
+                        <option value="{{ user.pk }}" {% if complaint.responsible_staff == user %}selected{% endif %}>{{ user.username }} ({{ user.get_full_name|default:user.username|default:'N/A' }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-sm" style="background-color: #c11325; color: white; padding: 10px 20px;">Cập nhật Trạng thái</button>
+        </form>
+        {% endif %}
+        <a href="{% url 'complaint_manager' %}" class="btn btn-dark" style="margin-top: 30px;">Quay lại Danh sách Quản lý</a>
+    </div>
+</section>
+{% endblock content %}

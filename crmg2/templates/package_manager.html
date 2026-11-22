@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Quản Lý Gói Hội Viên - GYM-X CRM{% endblock title %}
+
+{% block extra_css %}
+<style>
+    /* ... (Giữ nguyên các CSS cũ) ... */
+
+    .manager-content-area {
+        flex-grow: 1;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+    }
+    .manager-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        text-align: left;
+    }
+    .manager-table th, .manager-table td {
+        padding: 12px 15px;
+        border: 1px solid #eee;
+        font-family: 'Open Sans', sans-serif;
+        color: #000;
+    }
+    .manager-table thead th {
+        background-color: #c11325; /* Tiêu đề ĐỎ */
+        color: white;
+        text-transform: uppercase;
+        font-weight: 600;
+    }
+    .btn-action-black {
+        background-color: black;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-right: 5px;
+        font-size: 0.9rem;
+    }
+    .btn-action-red {
+        background-color: #c11325;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-size: 0.9rem;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="container" style="padding-top: 100px; padding-bottom: 50px;">
+
+    <h1 class="text-center" style="font-size: 3rem; color: #c11325; font-weight: 700;">DANH SÁCH GÓI HỘI VIÊN</h1>
+
+    <div class="manager-content-area">
+
+        <div class="position-relative d-flex justify-content-center align-items-center mb-4">
+
+            <form method="GET" class="d-flex w-100" style="max-width: 500px;">
+                <input type="text" name="search" placeholder="Mã gói tập/Tên gói" class="form-control me-2" value="{{ request.GET.search|default:'' }}">
+                <button type="submit" class="btn btn-action-red" style="border:none; white-space: nowrap;">Tìm kiếm</button>
+            </form>
+
+            {% if request.user.is_superuser %}
+            <div class="position-absolute end-0">
+                <a href="{% url 'add_package' %}" class="btn" style="background-color: #c11325; color: white; font-weight: 700;">
+                    + THÊM GÓI MỚI
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+        <table class="manager-table">
+            <thead>
+                <tr>
+                    <th>STT</th>
+                    <th>Mã gói tập</th>
+                    <th>Tên gói tập</th>
+                    <th>Giá tiền</th>
+                    <th>Hạn sử dụng</th>
+                    <th>Mô tả</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for package in packages %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ package.package_id }}</td>
+                    <td>{{ package.name|upper }}</td>
+                    <td>{{ package.get_price_display }}</td>
+                    <td>{{ package.duration_months }} tháng</td>
+                    <td>{{ package.description|truncatechars:30 }}</td>
+                    <td>
+                        <a href="{% url 'update_package' package_id=package.pk %}" class="btn-action-black">Chỉnh sửa</a>
+
+                        <button class="btn-action-red">Xóa</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="7" class="text-center">Chưa có gói hội viên nào được tạo.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock content %}

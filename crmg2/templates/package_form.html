@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ title_text }}{% endblock title %}
+
+{% block content %}
+<section class="container" style="padding-top: 100px; padding-bottom: 50px;">
+    <div style="background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 800px; margin: 0 auto;">
+        <h2 style="color: #c11325; text-align: center; margin-bottom: 30px; font-weight: 700;">{{ title_text }}</h2>
+        
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight: 600;">{{ field.label }}:</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <div class="d-flex justify-content-end mt-4">
+                <a href="{% url 'package_manager_view' %}" class="btn btn-secondary me-2">Hủy</a>
+                <button type="submit" class="btn" style="background-color: #c11325; color: white;">Lưu Gói Tập</button>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock content %}

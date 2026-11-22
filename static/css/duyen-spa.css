@@ -1,0 +1,461 @@
+:root{--ds-green:#17452e;--ds-deep:#103c27;--ds-sage:#859680;--ds-cream:#faf7ef;--ds-white:#fff;--ds-text:#35483a;--ds-muted:#69746a;--ds-line:#e3dfd4;--ds-gold:#e6c75c;--ds-head:76px;--ds-bottom:66px;--ds-serif:'Cormorant Garamond',Georgia,serif;--ds-sans:'Be Vietnam Pro',Arial,sans-serif}
+html{scroll-padding-top:calc(var(--ds-head) + 20px)}
+body.ds-home-page,body.ds-inner-page{padding-bottom:var(--ds-bottom)}
+body.ds-home-page{margin:0;padding-top:0;background:var(--ds-cream);font-family:var(--ds-sans);font-size:15px;color:var(--ds-text);line-height:1.7}
+.ds-home-page .ds-main{padding-top:var(--ds-head)}
+.ds-home-page .container,.ds-header .container,.ds-footer .container{max-width:1250px;padding-left:clamp(18px,4vw,54px);padding-right:clamp(18px,4vw,54px)}
+.ds-home-page h1,.ds-home-page h2,.ds-home-page h3{font-family:var(--ds-serif);color:var(--ds-green);font-weight:600;line-height:1.08;margin:0 0 16px}
+.ds-home-page h2{font-size:clamp(36px,4.4vw,56px);letter-spacing:-.025em}
+.ds-home-page p{margin:0 0 20px;color:var(--ds-muted);line-height:1.8}
+.ds-header.navbar{height:auto;min-height:var(--ds-head);padding:0;background:var(--ds-cream)!important;border-bottom:1px solid var(--ds-line);box-shadow:0 2px 16px #183a2310;z-index:1030;font-family:var(--ds-sans);text-transform:none}
+.ds-header .ds-nav-wrap{min-height:var(--ds-head);gap:16px;display:flex;align-items:center}
+.ds-header .ds-brand{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--ds-green)!important;padding:0;margin:0;white-space:nowrap}
+.ds-header .ds-brand img{display:block;object-fit:contain;width:46px;height:46px}
+.ds-brand strong{display:block;font-family:var(--ds-serif);font-weight:700;font-size:32px;letter-spacing:-1px;line-height:1}
+.ds-brand small{display:block;font-size:7.5px;font-weight:600;letter-spacing:1.3px;line-height:1.7}
+.ds-header .ds-menu{display:flex;align-items:center;gap:clamp(12px,2vw,34px);width:auto!important;margin-right:auto!important;margin-left:auto!important}
+.ds-header .ds-menu .nav-link{position:relative;color:var(--ds-green)!important;font-size:14px;font-weight:600;text-decoration:none;text-transform:none;padding:12px 2px;white-space:nowrap;background:transparent!important}
+.ds-header .ds-menu .nav-link:hover{color:#658265!important}
+.ds-header .ds-menu .ds-active:after{content:'';height:2px;position:absolute;bottom:3px;left:2px;right:2px;background:var(--ds-green)}
+.ds-header .navbar-toggler{padding:5px 8px;border:1px solid var(--ds-line)}
+.ds-header .dropdown-menu{background:var(--ds-white);border:1px solid var(--ds-line);border-radius:12px;padding:8px;min-width:200px}
+.ds-header .dropdown-item{color:var(--ds-green);font-size:14px;padding:10px;border-radius:6px}
+.ds-header .dropdown-item:hover{background:var(--ds-cream)!important;color:var(--ds-green)!important}
+.ds-nav-actions{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.ds-account-link{color:var(--ds-green)!important;text-decoration:none;font-size:13px;font-weight:600;white-space:nowrap}
+.ds-btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:43px;padding:10px 22px;border:1px solid transparent;border-radius:100px;text-decoration:none!important;font-family:var(--ds-sans);font-size:13px;line-height:1.45;font-weight:600;white-space:nowrap;cursor:pointer;transition:background .2s,color .2s,transform .2s}
+.ds-btn:hover{transform:translateY(-2px)}
+.ds-btn-primary{color:white!important;background:var(--ds-green);border-color:var(--ds-green)}
+.ds-btn-primary:hover{background:var(--ds-deep);border-color:var(--ds-deep)}
+.ds-btn-outline{background:transparent;color:var(--ds-green)!important;border-color:#788d78}
+.ds-btn-outline:hover{background:#e9eee4}
+.ds-cta-row{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.ds-eyebrow{display:block;color:#55705b;font-size:11px;letter-spacing:3px;font-weight:700;line-height:1.5;margin-bottom:14px}
+.ds-hero{position:relative;isolation:isolate;overflow:hidden;min-height:clamp(420px,34vw,530px);background:#efe6d7;display:flex;align-items:center}
+.ds-hero:before{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,#f4ecdf 0%,#f4ecdf 36%,#f4ecdfd9 45%,#f4ecdf20 62%,transparent 77%);pointer-events:none}
+.ds-hero-photo{position:absolute;inset:0 0 0 40%;z-index:-2;background:radial-gradient(ellipse at 72% 32%,#f6e9db 0%,#d8bfa3 45%,#b3ad93 100%);overflow:hidden}
+.ds-hero-photo img,.ds-photo img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;z-index:2}
+.ds-hero-photo img[hidden],.ds-photo img[hidden]{display:none!important}
+.ds-hero-photo img{object-position:center}
+.ds-hero-photo .ds-photo-placeholder{left:65%;top:50%}
+.ds-photo-placeholder{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:flex;align-items:center;flex-direction:column;gap:10px;z-index:1;text-align:center;color:#385740;font-size:12px;font-weight:600;white-space:nowrap}
+.ds-photo-placeholder i{font-size:30px}
+.ds-hero-inner{position:relative;padding-top:55px;padding-bottom:55px;width:100%}
+.ds-hero-copy{max-width:620px;width:55%}
+.ds-home-page .ds-hero h1{font-size:clamp(44px,5vw,76px);font-weight:600;letter-spacing:-.045em;line-height:.98;margin-bottom:22px}
+.ds-hero h1 em{font-weight:500}
+.ds-hero-copy p{font-size:14px;max-width:460px}
+.ds-benefits{background:#f5f1e7;border-bottom:1px solid var(--ds-line)}
+.ds-benefits-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding-top:23px;padding-bottom:23px}
+.ds-benefit{display:flex;align-items:center;gap:13px;padding:0 14px;border-right:1px solid var(--ds-line)}
+.ds-benefit:first-child{padding-left:0}.ds-benefit:last-child{border:0;padding-right:0}
+.ds-benefit i{font-size:26px;color:#6d886e;flex-shrink:0}
+.ds-benefit strong,.ds-benefit span{display:block;line-height:1.5}
+.ds-benefit strong{font-size:12px;font-weight:700;color:var(--ds-green)}
+.ds-benefit span{font-size:10px;color:var(--ds-muted);margin-top:4px}
+.ds-section{padding:clamp(45px,6vw,84px) 0}
+.ds-about{background:var(--ds-cream)}
+.ds-about-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,76px);align-items:center}
+.ds-photo{position:relative;overflow:hidden;background:linear-gradient(135deg,#dfd5c3,#c1cbb5);border-radius:19px}
+.ds-about-photo{aspect-ratio:1.55}
+.ds-about-photo img{object-position:center}
+.ds-rule{display:flex;align-items:center;gap:12px;letter-spacing:1px;text-transform:none}
+.ds-rule:after{content:'';height:1px;width:50px;background:#9fac97}
+.ds-about-copy p{font-size:14px;max-width:540px}
+.ds-more summary{list-style:none;width:max-content}
+.ds-more summary::-webkit-details-marker{display:none}
+.ds-more p{margin-top:18px;margin-bottom:0}
+.ds-services{background:#fffdf8}
+.ds-section-heading{text-align:center;max-width:670px;margin:0 auto 32px}
+.ds-service-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px}
+.ds-service-card{background:#fff;border:1px solid var(--ds-line);border-radius:18px;overflow:hidden;box-shadow:0 5px 24px #173d2810;display:flex;flex-direction:column;transition:transform .2s}
+.ds-service-card:hover{transform:translateY(-4px)}
+.ds-service-photo{aspect-ratio:1.45;border-radius:0;background:linear-gradient(135deg,#e7dbcb,#d0d8c4)}
+.ds-service-card:nth-child(2) .ds-service-photo{background:linear-gradient(135deg,#dce4d7,#b7cab5)}
+.ds-service-card:nth-child(3) .ds-service-photo{background:linear-gradient(135deg,#e7cfc1,#f2e7dc)}
+.ds-service-card:nth-child(4) .ds-service-photo{background:linear-gradient(135deg,#e5d7c1,#c8b69a)}
+.ds-card-copy{padding:20px;flex:1;display:flex;flex-direction:column}
+.ds-home-page .ds-card-copy h3{font-size:27px;margin-bottom:8px}
+.ds-card-copy p{font-size:13px;line-height:1.65;margin-bottom:16px}
+.ds-card-copy a{font-size:12px;font-weight:700;color:var(--ds-green);text-decoration:none;margin-top:auto}
+.ds-card-copy a:hover{text-decoration:underline}
+.ds-booking{background:#e9eee3}
+.ds-booking-grid{display:flex;justify-content:space-between;align-items:center;gap:30px}
+.ds-booking-grid h2{max-width:760px}
+.ds-booking-grid p{margin-bottom:0}
+.ds-messages{padding-top:16px}
+.ds-inner-page .ds-messages{padding-top:90px}
+.ds-footer{background:#f2eee4!important;padding:45px 0 20px;color:var(--ds-green);font-family:var(--ds-sans);border-top:1px solid var(--ds-line)}
+.ds-footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:32px}
+.ds-footer .ds-footer-brand{font-family:var(--ds-serif);font-size:36px;line-height:1;font-weight:700;margin-bottom:14px}
+.ds-footer h2{font-family:var(--ds-sans);font-size:14px;font-weight:700;text-transform:none;margin:0 0 16px;color:var(--ds-green)}
+.ds-footer p,.ds-footer a{display:block;color:var(--ds-green);font-size:13px;text-decoration:none;line-height:1.7;margin:0 0 9px}
+.ds-footer a:hover{text-decoration:underline}
+.ds-copyright{padding-top:18px;margin-top:28px;border-top:1px solid var(--ds-line);font-size:12px;color:var(--ds-muted);text-align:center}
+.ds-bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:1035;min-height:var(--ds-bottom);display:grid;grid-template-columns:repeat(3,1fr);align-items:stretch;background:var(--ds-deep);box-shadow:0 -3px 15px #143d2820;padding:5px 0; font-family:var(--ds-sans)}
+.ds-bottom-nav a,.ds-bottom-nav button{border:none;background:transparent;color:#fff!important;text-decoration:none;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;font-size:11px;font-weight:600;padding:6px;line-height:1.2;cursor:pointer}
+.ds-bottom-nav i{font-size:23px;line-height:1}
+.ds-bottom-nav .ds-selected,.ds-bottom-nav a:hover,.ds-bottom-nav button:hover{color:var(--ds-gold)!important}
+.ds-home-page a:focus-visible,.ds-home-page button:focus-visible,.ds-home-page summary:focus-visible,.ds-header a:focus-visible,.ds-bottom-nav a:focus-visible,.ds-bottom-nav button:focus-visible{outline:2px solid #b78d35;outline-offset:3px}
+@media(max-width:991.98px){.ds-header .navbar-collapse{padding:0 0 18px}.ds-header .ds-menu{align-items:flex-start;gap:2px;margin:8px 0 14px!important}.ds-header .ds-menu .nav-link{padding:8px 0}.ds-header .ds-menu .ds-active:after{bottom:1px}.ds-nav-actions{gap:12px}.ds-benefits-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.ds-benefit{padding:0!important;border:0}.ds-service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ds-hero-copy{width:62%}}
+@media(max-width:575.98px){:root{--ds-head:68px;--ds-bottom:62px}.ds-header .ds-brand img{width:40px;height:40px}.ds-brand strong{font-size:28px}.ds-brand small{font-size:7px}.ds-hero{display:flex;flex-direction:column;min-height:auto}.ds-hero:before{display:none}.ds-hero-photo{position:relative;inset:auto;order:2;width:100%;aspect-ratio:1.45;z-index:auto}.ds-hero-photo .ds-photo-placeholder{left:50%}.ds-hero-inner{order:1;padding-top:38px;padding-bottom:32px}.ds-hero-copy{width:100%;max-width:none}.ds-home-page .ds-hero h1{font-size:46px}.ds-hero-copy p{font-size:13px}.ds-btn{padding:10px 16px;font-size:12px}.ds-cta-row{gap:8px;margin-top:18px}.ds-benefits-grid{gap:18px 12px}.ds-benefit{gap:9px}.ds-benefit i{font-size:21px}.ds-benefit strong{font-size:11px}.ds-benefit span{font-size:10px}.ds-about-grid{grid-template-columns:1fr;gap:24px}.ds-service-grid{gap:12px}.ds-card-copy{padding:14px}.ds-home-page .ds-card-copy h3{font-size:23px}.ds-card-copy p{font-size:12px}.ds-booking-grid{flex-direction:column;align-items:flex-start;gap:16px}.ds-footer-grid{grid-template-columns:1fr 1fr;gap:24px 15px}.ds-footer-grid>div:first-child{grid-column:1/-1}.ds-bottom-nav i{font-size:21px}}
+@media(prefers-reduced-motion:reduce){.ds-btn,.ds-service-card{transition:none}.ds-btn:hover,.ds-service-card:hover{transform:none}}
+/* Chỉnh sửa tiêu đề banner */
+
+.ds-hero-copy {
+    width: 60%;
+    max-width: 690px;
+}
+
+.ds-home-page .ds-hero .ds-banner-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: clamp(32px, 3.3vw, 52px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    color: #17452e;
+}
+
+.ds-banner-line-one {
+    display: block;
+    font-style: italic;
+}
+
+.ds-banner-line-two {
+    display: block;
+    font-style: normal;
+}
+
+@media (min-width: 992px) {
+    .ds-banner-line-one,
+    .ds-banner-line-two {
+        white-space: nowrap;
+    }
+}
+
+@media (max-width: 767px) {
+    .ds-hero-copy {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .ds-home-page .ds-hero .ds-banner-title {
+        font-size: clamp(28px, 6vw, 40px);
+    }
+}
+/* =====================================
+   HIỆU ỨNG TUYẾT RƠI - DUYÊN SPA
+===================================== */
+
+#snow-container {
+
+    position: fixed;
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+    pointer-events: none;
+
+    z-index: 1020;
+
+}
+
+
+/* BÔNG TUYẾT */
+
+.ds-winter-flake {
+
+    position: absolute;
+    top: -36px;
+
+    width: var(--size);
+    height: var(--size);
+
+    color: #ffffff;
+
+    opacity: var(--opacity);
+
+    filter: drop-shadow(
+        0 1px 2px rgba(62, 85, 70, 0.35)
+    );
+
+    animation: ds-winter-fall
+               var(--duration)
+               linear
+               var(--delay)
+               infinite;
+
+    will-change: transform;
+
+}
+
+
+/* HÌNH BÔNG TUYẾT SÁU CÁNH */
+
+.ds-winter-flake svg {
+
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+}
+
+
+/* HẠT TUYẾT TRÒN */
+
+.ds-winter-dot {
+
+    border-radius: 50%;
+
+    background: radial-gradient(
+
+        circle,
+
+        #ffffff 25%,
+
+        rgba(255, 255, 255, 0.9) 45%,
+
+        rgba(255, 255, 255, 0) 76%
+
+    );
+
+    filter: drop-shadow(
+        0 1px 2px rgba(62, 85, 70, 0.18)
+    );
+
+}
+
+
+/* CHUYỂN ĐỘNG TUYẾT RƠI */
+
+@keyframes ds-winter-fall {
+
+    0% {
+
+        transform:
+            translate3d(0, -10px, 0)
+            rotate(0deg);
+
+    }
+
+    25% {
+
+        transform:
+            translate3d(var(--sway), 26vh, 0)
+            rotate(calc(var(--spin) * 0.25));
+
+    }
+
+    50% {
+
+        transform:
+            translate3d(var(--drift), 52vh, 0)
+            rotate(calc(var(--spin) * 0.5));
+
+    }
+
+    75% {
+
+        transform:
+            translate3d(
+                calc(var(--drift) + var(--sway)),
+                78vh,
+                0
+            )
+            rotate(calc(var(--spin) * 0.75));
+
+    }
+
+    100% {
+
+        transform:
+            translate3d(
+                var(--drift),
+                calc(100vh + 75px),
+                0
+            )
+            rotate(var(--spin));
+
+    }
+
+}
+
+
+/* =====================================
+   NÚT BẬT TẮT NHẠC NỀN
+===================================== */
+
+#musicToggle {
+
+    position: fixed;
+
+    bottom: calc(
+        var(--ds-bottom, 66px) + 20px
+    );
+
+    right: 25px;
+
+    min-height: 48px;
+
+    padding: 10px 16px;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    border-radius: 30px;
+
+    border: 1px solid #ffffff;
+
+    background: #17452e;
+
+    color: #ffffff;
+
+    font-family: var(--ds-sans);
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    z-index: 1036;
+
+    box-shadow:
+        0 4px 18px rgba(23, 69, 46, 0.25);
+
+    transition:
+        background 0.2s,
+        transform 0.2s;
+
+}
+
+
+#musicToggle i {
+
+    font-size: 20px;
+
+}
+
+
+#musicToggle:hover {
+
+    background: #285c3e;
+
+    transform: translateY(-2px);
+
+}
+
+
+#musicToggle:focus-visible {
+
+    outline: 2px solid #b78d35;
+
+    outline-offset: 3px;
+
+}
+
+
+/* HIỆU ỨNG KHI ĐANG PHÁT NHẠC */
+
+#musicToggle.playing {
+
+    animation: ds-music-pulse 2.5s infinite;
+
+}
+
+
+@keyframes ds-music-pulse {
+
+    0%, 100% {
+
+        box-shadow:
+            0 0 0 0 rgba(23, 69, 46, 0.28);
+
+    }
+
+    70% {
+
+        box-shadow:
+            0 0 0 10px rgba(23, 69, 46, 0);
+
+    }
+
+}
+
+
+/* TƯƠNG THÍCH ĐIỆN THOẠI */
+
+@media (max-width: 575.98px) {
+
+    #musicToggle {
+
+        right: 12px;
+
+        bottom: calc(
+            var(--ds-bottom, 62px) + 12px
+        );
+
+        padding: 8px 12px;
+
+    }
+
+}
+
+
+/* HỖ TRỢ NGƯỜI DÙNG HẠN CHẾ CHUYỂN ĐỘNG */
+
+@media (prefers-reduced-motion: reduce) {
+
+    #snow-container {
+
+        display: none;
+
+    }
+
+    #musicToggle.playing {
+
+        animation: none;
+
+    }
+
+    #musicToggle {
+
+        transition: none;
+
+    }
+
+}
+
+/* ====================================
+   DUYÊN SPA - BỎ THANH ĐIỀU HƯỚNG DƯỚI
+==================================== */
+
+.ds-bottom-nav {
+    display: none !important;
+}
+
+/* Loại bỏ khoảng trống dành cho menu cũ */
+:root {
+    --ds-bottom: 0px;
+}
+
+/* Đưa nút nhạc về góc dưới màn hình */
+#musicToggle {
+    bottom: 24px !important;
+    right: 24px;
+}
+
+@media (max-width: 575px) {
+    #musicToggle {
+        bottom: 16px !important;
+        right: 16px;
+    }
+}

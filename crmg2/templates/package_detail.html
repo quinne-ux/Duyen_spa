@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Gói Hội Viên - GymX Fitness Club{% endblock title %}
+
+{% block extra_css %}
+<style>
+    /* Style cho phần Chi tiết Gói tập */
+    .package-section {
+        padding: 120px 0 50px 0; /* ĐÃ SỬA: Tăng padding-top để tránh bị navbar che */
+    }
+
+    .package-guide {
+        display: flex;
+        justify-content: space-between;
+        gap: 30px;
+        margin-top: 40px;
+    }
+    .package-guide .step {
+        flex: 1;
+        background-color: #c11325;
+        color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+    .package-guide .step h4 {
+        color: #ffffff;
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    /* Style cho 3 Nút Đăng Ký MỚI */
+    .register-button-container {
+        display: flex; /* Kích hoạt Flexbox */
+        justify-content: center; /* Căn giữa nhóm nút */
+        gap: 30px; /* Khoảng cách giữa các nút */
+        margin: 30px 0 60px 0; /* Khoảng cách trên và dưới nhóm nút */
+        width: 100%;
+    }
+    .register-button-container a {
+        background-color: #c11325;
+        color: white;
+        padding: 15px 30px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 1rem;
+        letter-spacing: 1px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        display: inline-block;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        flex: 0 1 auto;
+        min-width: 180px; /* Chiều rộng tối thiểu cho nút */
+    }
+    .register-button-container a:hover {
+        background-color: #a0101f;
+        transform: translateY(-2px);
+    }
+
+    /* Responsive cho Nút Đăng Ký */
+    @media (max-width: 992px) {
+        .register-button-container {
+            flex-wrap: wrap; /* Cho phép xuống dòng khi không đủ chỗ */
+            gap: 20px;
+        }
+        .register-button-container a {
+            flex: 0 0 calc(50% - 10px); /* 2 nút trên 1 hàng trên màn hình vừa */
+            min-width: unset;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .package-guide, .register-button-container {
+            flex-direction: column; /* Xếp chồng khi màn hình nhỏ */
+            gap: 15px;
+        }
+        .register-button-container a {
+            flex: 0 0 100%;
+        }
+    }
+
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="container package-section">
+    <h1 class="text-center" style="font-size: 3rem; color: #c11325; font-weight: 700; margin-bottom: 30px;">CHI TIẾT GÓI HỘI VIÊN</h1>
+
+    <div class="text-center mb-4" style="border: 1px solid #eee; padding: 10px; border-radius: 8px;">
+        <img src="{% static 'images/package_comparison.png' %}"
+             alt="So sánh các gói tập GOLD VIP DIAMOND"
+             style="max-width: 80%; /* ĐÃ SỬA: Giảm kích thước ảnh xuống 80% */ height: auto; display: block; margin: 0 auto;">
+    </div>
+
+    <div class="register-button-container">
+        <a href="{% url 'register_package' package_id=1 %}">ĐĂNG KÝ GÓI GOLD</a>
+
+        <a href="{% url 'register_package' package_id=2 %}">ĐĂNG KÝ GÓI VIP</a>
+
+        <a href="{% url 'register_package' package_id=3 %}">ĐĂNG KÝ GÓI DIAMOND</a>
+    </div>
+
+
+    <div class="mt-5">
+        <h3 class="text-center" style="color: #c11325;">Hướng dẫn đăng ký luyện tập</h3>
+        <p class="text-center" style="color: #333; font-family: 'Open Sans', sans-serif;">Để đăng ký và tham gia tập luyện tại phòng gym gần đây nhất, bạn có thể làm theo các bước sau</p>
+    </div>
+
+    <div class="package-guide">
+        <div class="step">
+            <h4>Bước 1</h4>
+            <p>Đăng ký tài khoản và Đăng nhập vào hệ thống khách hàng của GYMX.</p>
+        </div>
+        <div class="step">
+            <h4>Bước 2</h4>
+            <p>Chọn gói tập phù hợp với nhu cầu và nhấn nút đăng ký tương ứng với gói bạn chọn.</p>
+        </div>
+        <div class="step">
+            <h4>Bước 3</h4>
+            <p>Tận hưởng trải nghiệm tập luyện tuyệt vời và đạt được kết quả mong muốn tại GYMX.</p>
+        </div>
+    </div>
+
+</section>
+{% endblock content %}

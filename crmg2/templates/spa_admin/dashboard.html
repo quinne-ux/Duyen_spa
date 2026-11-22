@@ -1,0 +1,492 @@
+
+{% extends 'spa_admin/base.html' %}
+
+{% block admin_content %}
+
+<style>
+    /* =========================================
+       DUYÊN SPA - DASHBOARD TỔNG QUAN
+       CĂN CHỈNH THANH CHỌN NGÀY
+       ========================================= */
+
+    .adm-dashboard-head {
+        align-items: center;
+    }
+
+    .adm-dashboard-head .adm-actions {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        gap: 10px;
+        margin-left: auto;
+    }
+
+    .adm-dashboard-head .adm-date-form {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 10px;
+        margin: 0;
+    }
+
+    .adm-dashboard-head .adm-date-input {
+        width: 185px;
+        min-width: 185px;
+        height: 42px;
+        flex: 0 0 185px;
+    }
+
+    .adm-dashboard-head .adm-actions .adm-btn {
+        min-height: 42px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    /* Màn hình vừa và nhỏ */
+
+    @media (max-width: 1180px) {
+
+        .adm-dashboard-head {
+            align-items: flex-start;
+        }
+
+        .adm-dashboard-head .adm-actions {
+            width: 100%;
+            margin-left: 0;
+            justify-content: flex-start;
+        }
+
+    }
+
+    /* Điện thoại */
+
+    @media (max-width: 620px) {
+
+        .adm-dashboard-head .adm-actions {
+            flex-wrap: wrap;
+        }
+
+        .adm-dashboard-head .adm-date-form {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            width: 100%;
+        }
+
+        .adm-dashboard-head .adm-date-input {
+            width: 100%;
+            min-width: 0;
+        }
+
+        .adm-dashboard-head .adm-actions > .adm-btn.primary {
+            width: 100%;
+        }
+
+    }
+
+</style>
+
+
+<!-- =========================================
+     TIÊU ĐỀ DASHBOARD VÀ BỘ LỌC NGÀY
+     ========================================= -->
+
+<div class="adm-head adm-dashboard-head">
+
+    <div>
+
+        <div class="adm-eyebrow">
+            TỔNG QUAN HOẠT ĐỘNG
+        </div>
+
+        <h1>
+            Xin chào, Chủ Duyên Spa
+        </h1>
+
+        <p>
+            Theo dõi lịch hẹn và tình hình phục vụ
+            trong một màn hình.
+        </p>
+
+    </div>
+
+    <div class="adm-actions">
+
+        <!-- CHỌN NGÀY THỐNG KÊ -->
+
+        <form class="adm-inline adm-date-form"
+              method="get">
+
+            <input
+                type="date"
+                name="date"
+                class="adm-input adm-date-input"
+                value="{{ day|date:'Y-m-d' }}"
+                aria-label="Ngày thống kê"
+            >
+
+            <button class="adm-btn"
+                    type="submit">
+
+                Xem ngày
+
+            </button>
+
+        </form>
+
+        <!-- CHUYỂN ĐẾN QUẢN LÝ LỊCH -->
+
+        <a
+            class="adm-btn primary"
+            href="{% url 'spa_admin_bookings' %}?date={{ day|date:'Y-m-d' }}"
+        >
+
+            Quản lý lịch hẹn
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     4 CHỈ SỐ TỔNG QUAN
+     ========================================= -->
+
+<div class="adm-stats">
+
+    <!-- TỔNG SỐ LỊCH HẸN -->
+
+    <div class="adm-stat">
+
+        <div>
+            Tổng số lịch hẹn
+            <i class="fa fa-calendar-o"></i>
+        </div>
+
+        <strong>
+            {{ metrics.total }}
+        </strong>
+
+        <small>
+            Bao gồm mọi trạng thái trong ngày
+        </small>
+
+    </div>
+
+
+    <!-- SỐ KHÁCH DỰ KIẾN -->
+
+    <div class="adm-stat">
+
+        <div>
+            Số khách dự kiến
+            <i class="fa fa-users"></i>
+        </div>
+
+        <strong>
+            {{ metrics.expected }}
+        </strong>
+
+        <small>
+            Không tính lịch đã hủy và không đến
+        </small>
+
+    </div>
+
+
+    <!-- SỐ KHÁCH THỰC TẾ -->
+
+    <div class="adm-stat">
+
+        <div>
+            Số khách thực tế
+            <i class="fa fa-user"></i>
+        </div>
+
+        <strong>
+            {{ metrics.actual }}
+        </strong>
+
+        <small>
+            Số người chủ spa đã xác nhận đến
+        </small>
+
+    </div>
+
+
+    <!-- LỊCH ĐÃ HOÀN THÀNH -->
+
+    <div class="adm-stat">
+
+        <div>
+            Lịch đã hoàn thành
+            <i class="fa fa-check-circle-o"></i>
+        </div>
+
+        <strong>
+            {{ metrics.completed }}
+        </strong>
+
+        <small>
+            Số lịch đã xác nhận khách đến
+        </small>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     THỐNG KÊ TRẠNG THÁI
+     ========================================= -->
+
+<div class="adm-mini-stats">
+
+    <span>
+        Đã hủy
+        <b>{{ metrics.cancelled }}</b>
+    </span>
+
+    <span>
+        Không đến
+        <b>{{ metrics.no_show }}</b>
+    </span>
+
+    <span>
+        Đã hoàn thành
+        <b>{{ metrics.completed }}</b>
+    </span>
+
+</div>
+
+
+<!-- =========================================
+     BIỂU ĐỒ VÀ DỊCH VỤ PHỔ BIẾN
+     ========================================= -->
+
+<div class="adm-grid wide">
+
+    <!-- BIỂU ĐỒ XU HƯỚNG -->
+
+    <section class="adm-panel">
+
+        <div class="adm-panel-head">
+
+            <h2>
+                Xu hướng lượt khách
+            </h2>
+
+            <span>
+                7 ngày gần nhất · Số khách dự kiến
+            </span>
+
+        </div>
+
+        <div class="adm-chart-bars">
+
+            {% for r in trend %}
+
+            <div class="adm-chart-col">
+
+                <b>
+                    {{ r.total }}
+                </b>
+
+                <div
+                    class="adm-bar"
+                    style="height: {{ r.pct }}%;"
+                ></div>
+
+                <small>
+                    {{ r.label }}
+                </small>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- DỊCH VỤ PHỔ BIẾN -->
+
+    <section class="adm-panel">
+
+        <div class="adm-panel-head">
+
+            <h2>
+                Dịch vụ được lựa chọn
+            </h2>
+
+            <a href="{% url 'spa_admin_analytics' %}">
+                Xem báo cáo
+            </a>
+
+        </div>
+
+        {% for x in service_rank %}
+
+        <div class="adm-rank-row">
+
+            <span>
+                {{ x.service }}
+            </span>
+
+            <strong>
+                {{ x.n }} khách
+            </strong>
+
+        </div>
+
+        {% empty %}
+
+        <p class="adm-empty">
+            Chưa có lịch trong ngày.
+        </p>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+
+<!-- =========================================
+     SỨC CHỨA VÀ LỊCH HẸN SẮP TỚI
+     ========================================= -->
+
+<div class="adm-grid wide">
+
+    <!-- SỨC CHỨA THEO KHUNG GIỜ -->
+
+    <section class="adm-panel">
+
+        <div class="adm-panel-head">
+
+            <h2>
+                Sức chứa theo khung giờ
+            </h2>
+
+            <a
+                href="{% url 'spa_admin_slots' %}?date={{ day|date:'Y-m-d' }}"
+            >
+                Điều chỉnh
+            </a>
+
+        </div>
+
+        <div class="adm-table-scroller">
+
+            <table class="adm-table compact">
+
+                <thead>
+
+                    <tr>
+                        <th>Giờ</th>
+                        <th>Khách đã đặt</th>
+                        <th>Giới hạn</th>
+                        <th>Còn trống</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for r in cap_rows %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ r.hour }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ r.used }}
+                        </td>
+
+                        <td>
+                            {{ r.cap }}
+                        </td>
+
+                        <td>
+
+                            <span class="adm-pill neutral">
+                                {{ r.free }}
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- LỊCH HẸN SẮP TỚI -->
+
+    <section class="adm-panel">
+
+        <div class="adm-panel-head">
+
+            <h2>
+                Lịch hẹn sắp tới
+            </h2>
+
+            <a href="{% url 'spa_admin_bookings' %}">
+                Xem tất cả
+            </a>
+
+        </div>
+
+        {% for r in upcoming %}
+
+        <div class="adm-upcoming">
+
+            <div>
+
+                <b>
+                    {{ r.name }}
+                </b>
+
+                <small>
+                    {{ r.day|date:'d/m/Y' }}
+                    ·
+                    {{ r.hour }}
+                </small>
+
+            </div>
+
+            <span class="adm-pill confirmed">
+
+                {{ r.party_size }} người
+
+            </span>
+
+        </div>
+
+        {% empty %}
+
+        <p class="adm-empty">
+            Không có lịch sắp tới.
+        </p>
+
+        {% endfor %}
+
+    </section>
+
+</div>
+
+{% endblock admin_content %}

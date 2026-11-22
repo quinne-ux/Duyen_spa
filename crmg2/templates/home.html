@@ -1,0 +1,394 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Duyên Spa | Chăm sóc làn da, nâng niu vẻ đẹp tự nhiên{% endblock title %}
+{% block body_class %}ds-home-page{% endblock body_class %}
+{% block legacy_css %}{% endblock legacy_css %}
+{% block legacy_js %}{% endblock legacy_js %}
+{% block content %}
+<section class="ds-hero" id="home">
+    <div class="ds-hero-photo" aria-hidden="true">
+        <img src="{% static 'images/duyen-banner.jpg' %}" alt="" onerror="this.hidden=true">
+        <span class="ds-photo-placeholder"><i class="fa fa-picture-o" aria-hidden="true"></i> Ảnh chăm sóc da</span>
+    </div>
+    <div class="container ds-hero-inner">
+        <div class="ds-hero-copy">
+            <h1 class="ds-banner-title">
+    <span class="ds-banner-line-one">
+        Chăm sóc làn da
+    </span>
+
+    <span class="ds-banner-line-two">
+        Nâng niu vẻ đẹp tự nhiên
+    </span>
+            </h1>
+            <p>Không gian thư giãn, dịch vụ chuyên sâu và liệu trình cá nhân hóa, cùng bạn chăm sóc làn da mỗi ngày.</p>
+            <div class="ds-cta-row">
+                <a class="ds-btn ds-btn-primary" href="{% url 'trial_booking' %}"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Đặt lịch ngay</a>
+                <a class="ds-btn ds-btn-outline" href="{% url 'service_list' %}">Xem dịch vụ <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="ds-benefits" aria-label="Trải nghiệm tại Duyên Spa">
+    <div class="container ds-benefits-grid">
+        <div class="ds-benefit"><i class="fa fa-leaf" aria-hidden="true"></i><div><strong>Chăm sóc phù hợp</strong><span>Lắng nghe nhu cầu làn da</span></div></div>
+        <div class="ds-benefit"><i class="fa fa-user-o" aria-hidden="true"></i><div><strong>Tư vấn tận tâm</strong><span>Đồng hành cùng khách hàng</span></div></div>
+        <div class="ds-benefit"><i class="fa fa-pagelines" aria-hidden="true"></i><div><strong>Không gian thư giãn</strong><span>Riêng tư và thoải mái</span></div></div>
+        <div class="ds-benefit"><i class="fa fa-calendar-check-o" aria-hidden="true"></i><div><strong>Đặt lịch dễ dàng</strong><span>Chủ động thời gian</span></div></div>
+    </div>
+</section>
+<section class="ds-section ds-about" id="about">
+    <div class="container ds-about-grid">
+        <div class="ds-photo ds-about-photo"><img src="{% static 'images/duyen-about.jpg' %}" alt="Không gian Duyên Spa" loading="lazy" onerror="this.hidden=true"><span class="ds-photo-placeholder"><i class="fa fa-picture-o" aria-hidden="true"></i> Ảnh không gian spa</span></div>
+        <div class="ds-about-copy">
+            <span class="ds-eyebrow ds-rule">Về Duyên Spa</span>
+            <h2>Sứ mệnh của chúng tôi</h2>
+            <p>Duyên Spa mong muốn mang đến giải pháp chăm sóc da phù hợp với từng khách hàng. Chúng tôi tin rằng làm đẹp không chỉ là chăm sóc vẻ ngoài, mà còn là dành thời gian yêu thương chính mình.</p>
+            <details class="ds-more"><summary class="ds-btn ds-btn-outline">Tìm hiểu thêm <i class="fa fa-long-arrow-right" aria-hidden="true"></i></summary><p>Mỗi làn da có những nhu cầu riêng. Duyên Spa hướng đến việc lắng nghe, tư vấn và lựa chọn phương pháp chăm sóc phù hợp với tình trạng da và mong muốn của khách hàng.</p></details>
+        </div>
+    </div>
+</section>
+<section class="ds-section ds-services" id="services">
+    <div class="container">
+        <div class="ds-section-heading"><span class="ds-eyebrow">CHĂM SÓC VẺ ĐẸP CỦA BẠN</span><h2>Dịch vụ nổi bật</h2><p>Lựa chọn dịch vụ phù hợp với nhu cầu của bạn.</p></div>
+        <div class="ds-service-grid">
+            {% for item in featured_services %}
+            <article class="ds-service-card">
+                <div class="ds-photo ds-service-photo">
+                    <img src="{% static item.image %}" alt="{{ item.name }}" loading="lazy" onerror="this.hidden=true">
+                    <span class="ds-photo-placeholder"><i class="fa fa-leaf" aria-hidden="true"></i></span>
+                </div>
+                <div class="ds-card-copy">
+                    <h3>{{ item.name }}</h3>
+                    <p>{{ item.description|truncatechars:110 }}</p>
+                    <a href="{% url 'spa_service_detail' item.slug %}">Xem dịch vụ <i class="fa fa-long-arrow-right" aria-hidden="true"></i></a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+<section class="ds-section ds-booking" id="booking">
+    <div class="container ds-booking-grid"><div><span class="ds-eyebrow">DÀNH THỜI GIAN CHO CHÍNH MÌNH</span><h2>Bắt đầu hành trình chăm sóc làn da</h2><p>Chọn dịch vụ và gửi yêu cầu đặt lịch để Duyên Spa có thể đồng hành cùng bạn.</p></div><a class="ds-btn ds-btn-primary" href="{% url 'trial_booking' %}"><i class="fa fa-calendar-check-o" aria-hidden="true"></i> Đặt lịch ngay</a></div>
+</section>
+{% endblock content %}
+{% block extra_js %}
+
+<!-- HIỆU ỨNG TUYẾT RƠI -->
+
+<div id="snow-container" aria-hidden="true"></div>
+
+
+<!-- NHẠC NỀN DUYÊN SPA -->
+
+<audio id="backgroundMusic"
+       loop
+       preload="metadata"
+       src="{% static 'music/background.mp3' %}">
+</audio>
+
+
+<!-- NÚT BẬT TẮT NHẠC -->
+
+<button id="musicToggle"
+        type="button"
+        aria-label="Bật nhạc nền"
+        aria-pressed="false"
+        title="Bật nhạc nền">
+
+    <i class="fa fa-volume-off" aria-hidden="true"></i>
+
+    <span id="musicLabel">Bật nhạc</span>
+
+</button>
+
+
+<script>
+
+(function () {
+
+    /* ===========================
+       HIỆU ỨNG TUYẾT RƠI
+    =========================== */
+
+    const snow = document.getElementById('snow-container');
+
+    const reducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    );
+
+    const mobile = window.matchMedia(
+        '(max-width: 767px)'
+    ).matches;
+
+    const random = (min, max) =>
+        min + Math.random() * (max - min);
+
+
+    /* Tạo hình bông tuyết sáu cánh */
+
+    const arm =
+        '<path d="M0 0V-13 M0 -7L-4 -11 M0 -7L4 -11"/>';
+
+    const crystal =
+        '<svg viewBox="-16 -16 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+
+        Array.from({length: 6}, (_, i) =>
+            '<g transform="rotate(' +
+            (i * 60) +
+            ')">' + arm + '</g>'
+        ).join('') +
+
+        '</svg>';
+
+
+    function createSnow() {
+
+        snow.replaceChildren();
+
+        if (reducedMotion.matches) return;
+
+        const count = mobile ? 40 : 76;
+
+        for (let i = 0; i < count; i++) {
+
+            const flake = document.createElement('span');
+
+            const isCrystal = i % 4 !== 0;
+
+            const size = isCrystal
+                ? random(13, 30)
+                : random(8, 14);
+
+            const duration = random(12, 24);
+
+            flake.className = 'ds-winter-flake' +
+                (isCrystal ? '' : ' ds-winter-dot');
+
+            flake.style.left = random(-2, 100) + '%';
+
+            flake.style.setProperty(
+                '--size', size + 'px'
+            );
+
+            flake.style.setProperty(
+                '--duration', duration + 's'
+            );
+
+            flake.style.setProperty(
+                '--delay', -random(0, duration) + 's'
+            );
+
+            flake.style.setProperty(
+                '--drift', random(-85, 85) + 'px'
+            );
+
+            flake.style.setProperty(
+                '--sway', random(12, 40) + 'px'
+            );
+
+            flake.style.setProperty(
+                '--spin',
+                (Math.random() < 0.5 ? -1 : 1) *
+                random(110, 330) + 'deg'
+            );
+
+            flake.style.setProperty(
+                '--opacity', random(0.48, 0.92)
+            );
+
+            if (isCrystal) {
+
+                flake.innerHTML = crystal;
+
+            }
+
+            snow.appendChild(flake);
+
+        }
+
+    }
+
+    createSnow();
+
+    reducedMotion.addEventListener(
+        'change', createSnow
+    );
+
+
+    /* ===========================
+       NHẠC NỀN DUYÊN SPA
+    =========================== */
+
+    const music = document.getElementById(
+        'backgroundMusic'
+    );
+
+    const button = document.getElementById(
+        'musicToggle'
+    );
+
+    const label = document.getElementById(
+        'musicLabel'
+    );
+
+    const icon = button.querySelector('i');
+
+    music.volume = 0.35;
+
+    let optedOut = false;
+
+    try {
+
+        optedOut =
+            sessionStorage.getItem('ds-music-muted') === '1';
+
+    } catch (_) {}
+
+
+    function rememberMute(muted) {
+
+        optedOut = muted;
+
+        try {
+
+            sessionStorage.setItem(
+                'ds-music-muted',
+                muted ? '1' : '0'
+            );
+
+        } catch (_) {}
+
+    }
+
+
+    function updateMusicButton() {
+
+        const playing = !music.paused;
+
+        icon.className = playing
+            ? 'fa fa-volume-up'
+            : 'fa fa-volume-off';
+
+        label.textContent = playing
+            ? 'Tắt nhạc'
+            : 'Bật nhạc';
+
+        button.title = playing
+            ? 'Tắt nhạc nền'
+            : 'Bật nhạc nền';
+
+        button.setAttribute(
+            'aria-label', button.title
+        );
+
+        button.setAttribute(
+            'aria-pressed', String(playing)
+        );
+
+        button.classList.toggle(
+            'playing', playing
+        );
+
+    }
+
+
+    async function startMusic(explicit = false) {
+
+        if (optedOut || !music.paused) return;
+
+        try {
+
+            await music.play();
+
+        } catch (error) {
+
+            if (explicit) {
+
+                label.textContent = 'Thử lại';
+
+                button.title =
+                    'Không phát được nhạc. Kiểm tra file MP3.';
+
+            }
+
+        }
+
+    }
+
+
+    button.addEventListener('click', function () {
+
+        if (music.paused) {
+
+            rememberMute(false);
+
+            startMusic(true);
+
+        } else {
+
+            rememberMute(true);
+
+            music.pause();
+
+        }
+
+    });
+
+
+    music.addEventListener(
+        'play', updateMusicButton
+    );
+
+    music.addEventListener(
+        'pause', updateMusicButton
+    );
+
+
+    music.addEventListener('error', function () {
+
+        label.textContent = 'Thử lại';
+
+        button.title =
+            'Không tải được background.mp3';
+
+    });
+
+
+    /* Phát nhạc khi khách tương tác */
+
+    function unlockMusic(event) {
+
+        if (
+            event.target instanceof Element &&
+            event.target.closest('#musicToggle')
+        ) return;
+
+        if (
+            event.type === 'keydown' &&
+            event.key !== 'Enter' &&
+            event.key !== ' '
+        ) return;
+
+        startMusic();
+
+    }
+
+    document.addEventListener(
+        'click', unlockMusic
+    );
+
+    document.addEventListener(
+        'keydown', unlockMusic
+    );
+
+
+    /* Thử tự động phát nhạc */
+
+    startMusic();
+
+})();
+
+</script>
+
+{% endblock extra_js %}

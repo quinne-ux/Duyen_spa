@@ -1,0 +1,113 @@
+/* Duyen Spa | Khu vuc nhan vien – giong phong cach website khach hang */
+:root{--staff-green:#17452e;--staff-cream:#faf7ef;--staff-ivory:#fffefa;--staff-muted:#738576;--staff-line:#e3e5dd;--staff-sage:#e9eee5}
+*{box-sizing:border-box}
+body.staff-site{margin:0;font:13px/1.65 'Be Vietnam Pro',Arial,sans-serif;background:var(--staff-cream);color:#244c35}
+.staff-site button,.staff-site input,.staff-site select{font:inherit}
+.staff-site a{color:inherit;text-decoration:none}
+.staff-site a:focus-visible,.staff-site button:focus-visible,.staff-site input:focus-visible,.staff-site select:focus-visible{outline:2px solid #90af92;outline-offset:3px}
+.staff-site-header{background:#faf7ef;border-bottom:1px solid #e9e1d5;box-shadow:0 2px 18px #244c3509;position:sticky;top:0;z-index:40}
+.staff-header-inner{max-width:1270px;min-height:76px;margin:0 auto;padding:9px 24px;display:flex;align-items:center;gap:35px}
+.staff-brand{display:flex;align-items:center;gap:11px;white-space:nowrap}
+.staff-brand img{width:45px;height:45px;object-fit:contain}
+.staff-brand span{font:600 31px/1 'Cormorant Garamond',Georgia,serif;color:var(--staff-green)}
+.staff-navigation{margin:auto;display:flex;align-items:center;gap:30px}
+.staff-navigation a{position:relative;padding:18px 0;font-weight:600;color:#2d533b;white-space:nowrap}
+.staff-navigation a:hover{color:#5e7d62}
+.staff-navigation a.active::after{position:absolute;bottom:10px;left:0;right:0;height:2px;background:var(--staff-green);content:''}
+.staff-account{display:flex;align-items:center;gap:19px;font-size:12px;font-weight:600;color:#2e593b;white-space:nowrap}
+.staff-account a:hover{text-decoration:underline}
+.staff-main{min-height:calc(100vh - 205px)}
+.staff-container{max-width:1290px;margin:0 auto;padding:32px 26px 70px}
+.staff-messages{margin-bottom:17px}
+.staff-message{border:1px solid #d7e6d8;background:#edf5eb;border-radius:10px;color:#2c6540;padding:13px 16px;margin-bottom:9px}
+.staff-message.error{border-color:#edceca;background:#fff5f3;color:#a04337}
+.staff-message.warning{border-color:#ead8af;background:#fffbeb;color:#8d672a}
+/* Banner ru dung anh thuong hieu da co tai static/images/duyen-banner.jpg */
+.staff-banner{min-height:236px;position:relative;isolation:isolate;display:flex;align-items:center;overflow:hidden;border-radius:19px;background:#f4ecdf;border:1px solid #eadfce;margin-bottom:26px;box-shadow:0 10px 30px #183f2a0b}
+.staff-banner::before{content:'';position:absolute;z-index:-2;right:0;top:0;bottom:0;width:64%;background-image:var(--staff-banner);background-color:#d7c0a5;background-size:cover;background-position:center 50%}
+.staff-banner::after{content:'';position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#f4ecdf 0%,#f4ecdf 30%,rgba(244,236,223,.98) 39%,rgba(244,236,223,.82) 48%,rgba(244,236,223,.31) 67%,rgba(244,236,223,.02) 88%)}
+.staff-banner-content{padding:38px 47px;position:relative;z-index:2;width:min(580px,60%)}
+.staff-eyebrow{display:block;font-size:10px;font-weight:700;letter-spacing:2.8px;color:#618069;margin-bottom:12px}
+.staff-banner h1{font:600 clamp(28px,3.2vw,38px)/1.3 'Be Vietnam Pro',Arial,sans-serif;letter-spacing:-.9px;color:var(--staff-green);margin:0 0 10px}
+.staff-banner p{max-width:420px;font-size:13px;line-height:1.8;color:#5f7564;margin:0}
+/* Form + filters */
+.staff-filters{display:grid;grid-template-columns:170px minmax(180px,1fr) 195px auto;align-items:end;gap:13px;background:#fffdf9;border:1px solid #e9e4d9;border-radius:16px;padding:19px 20px;margin-bottom:17px;box-shadow:0 3px 16px #153b2905}
+.staff-filters label,.staff-arrival-count{font-size:11px;font-weight:600;color:#687f6e;display:flex;flex-direction:column;gap:7px;min-width:0}
+.staff-input{width:100%;height:44px;min-width:0;border:1px solid #d7dfd6;border-radius:10px;background:#fff;color:#234937;padding:10px 12px;outline:0;font-size:12px}
+.staff-input:focus{border-color:#78a080;box-shadow:0 0 0 3px #7a9d791c}
+.staff-input::placeholder{color:#9ca89f}
+.staff-btn{height:44px;display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;border:1px solid #dce2d9;border-radius:10px;background:#fff;color:var(--staff-green);padding:0 18px;font-weight:700;font-size:12px;cursor:pointer}
+.staff-btn:hover{filter:brightness(.97)}
+.staff-btn.staff-primary{background:var(--staff-green);color:#fff;border-color:var(--staff-green)}
+.staff-view-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 15px}
+.staff-tabs{display:flex;gap:3px;background:#e9eee4;border:1px solid #dce6db;border-radius:10px;padding:4px}
+.staff-tab{background:none;border:0;border-radius:8px;color:#677e6c;padding:9px 18px;font-weight:600;font-size:11px;cursor:pointer}
+.staff-tab.active{background:#fff;color:var(--staff-green);box-shadow:0 1px 5px #13372215}
+.staff-result-count{font-size:11px;color:#789080}
+.staff-history-count{font-size:12px;color:var(--staff-green)}
+/* Table */
+.staff-table-card{background:#fff;border:1px solid var(--staff-line);border-radius:16px;overflow:hidden;box-shadow:0 6px 25px #193e2a06}
+.staff-table-card[hidden]{display:none!important}
+.staff-scroll{overflow-x:auto}
+.staff-table{border-collapse:collapse;width:100%;min-width:990px}
+.staff-table th{background:#e8eee5;color:#214c33;font-weight:700;font-size:11px;white-space:nowrap;text-align:left;padding:17px 15px}
+.staff-table td{vertical-align:middle;border-top:1px solid #edeee9;padding:19px 15px;color:#2d4c39;font-size:12px;line-height:1.6}
+.staff-table tbody tr:hover td{background:#fcfdf9}
+.staff-table td strong{font-weight:700;color:#17452e}
+.staff-table td small{display:block;font-size:10.5px;color:#829485;margin-top:3px}
+.staff-table td.staff-code{white-space:nowrap;font-weight:700;color:#17452e}
+.staff-table-title{padding:17px 18px 10px;font-weight:600;color:var(--staff-green)}
+.staff-slot-table{min-width:540px}
+.staff-status{display:inline-block;white-space:nowrap;border-radius:999px;padding:7px 11px;font-size:10px;font-weight:700;background:#e5efe6;color:#28613c}
+.staff-status.pending{background:#fff0dc;color:#946922}
+.staff-status.completed{background:#e0efe7;color:#247152}
+.staff-status.cancelled{background:#eeeae7;color:#8b786c}
+.staff-status.no_show{background:#fff0d8;color:#986b27}
+.staff-row-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;min-width:210px}
+.staff-row-actions form{margin:0}
+.staff-mini-btn{border-radius:8px;padding:8px 10px;white-space:nowrap;font-size:10.5px;font-weight:700;cursor:pointer}
+.staff-mini-btn.staff-arrival{background:#e7f3e7;border:1px solid #cde2ce;color:#2b7447}
+.staff-mini-btn.staff-noshow{background:#fff9e8;border:1px solid #f0d7a1;color:#95681e}
+.staff-mini-btn:hover{filter:brightness(.97)}
+.staff-muted{color:#98a397}
+.staff-empty{padding:38px 14px!important;text-align:center;color:#718372!important}
+/* Dialog */
+.staff-dialog{background:#fffefa;width:min(470px,calc(100% - 26px));max-width:100%;padding:0;border:1px solid #dbe6db;border-radius:19px;box-shadow:0 18px 65px #1437273c;color:var(--staff-green)}
+.staff-dialog::backdrop{background:#17382783}
+.staff-dialog form{padding:25px}
+.staff-dialog-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.staff-dialog-head h2{font-size:20px;font-weight:700;margin:0}
+.staff-dialog-head button{font-size:25px;border:0;background:none;cursor:pointer;color:#788b7d}
+.staff-dialog-info{background:#f1f6ee;border-radius:12px;padding:14px;font-size:12px;line-height:1.8;margin:0 0 20px}
+.staff-dialog-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:22px;flex-wrap:wrap}
+.staff-footer{border-top:1px solid #e5e1d8;background:#f0ece2;color:#6d806e}
+.staff-footer-inner{max-width:1290px;margin:0 auto;padding:26px;display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:11px}
+.staff-footer-brand{color:var(--staff-green);font:600 24px 'Cormorant Garamond',Georgia,serif}
+/* Tablet */
+@media(max-width:1100px){.staff-header-inner{gap:19px}.staff-navigation{gap:18px}.staff-filters{grid-template-columns:150px minmax(180px,1fr) 170px auto}}
+@media(max-width:880px){.staff-header-inner{flex-wrap:wrap;min-height:76px;gap:6px 16px}.staff-navigation{order:3;width:100%;justify-content:center}.staff-navigation a{padding:8px 0 13px}.staff-navigation a.active::after{bottom:6px}.staff-account{margin-left:auto}.staff-filters{grid-template-columns:1fr 1fr}.staff-filters .staff-search{grid-column:2}.staff-banner-content{width:65%;padding:32px}.staff-footer-inner{flex-wrap:wrap}}
+/* Mobile: o trang nhan vien, chuyen bang thanh card de de doc */
+@media(max-width:620px){
+ .staff-header-inner{padding:11px 15px 0}.staff-brand img{width:37px;height:37px}.staff-brand span{font-size:26px}.staff-account{gap:10px;font-size:10px}.staff-username{max-width:105px;overflow:hidden;text-overflow:ellipsis}
+ .staff-navigation{gap:25px}.staff-navigation a{font-size:11px}
+ .staff-container{padding:20px 14px 50px}
+ .staff-banner{min-height:308px;align-items:flex-start;margin-bottom:19px}
+ .staff-banner-content{width:100%;padding:25px 24px 160px}
+ .staff-banner::before{width:100%;top:auto;bottom:0;height:60%;background-position:center 50%}
+ .staff-banner::after{background:linear-gradient(180deg,#f4ecdf 0%,#f4ecdf 37%,rgba(244,236,223,.98) 45%,rgba(244,236,223,.74) 59%,rgba(244,236,223,.02) 88%)}
+ .staff-banner h1{font-size:25px}.staff-banner p{font-size:12px}
+ .staff-filters{grid-template-columns:1fr;padding:15px}.staff-filters .staff-search{grid-column:auto}.staff-filters .staff-btn{width:100%}
+ .staff-view-tools{align-items:flex-start}.staff-result-count{font-size:10px}
+ .staff-scroll{overflow-x:visible}
+ .staff-table,.staff-table tbody{display:block;min-width:0;width:100%}.staff-table thead{display:none}
+ .staff-table tbody tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px 16px;padding:18px;border-bottom:1px solid #e7eae3}
+ .staff-table tbody tr:last-child{border-bottom:0}
+ .staff-table tbody td{display:block;padding:0;border:0;min-width:0;overflow-wrap:anywhere;font-size:11px}
+ .staff-table tbody td::before{content:attr(data-label);display:block;font-size:9px;letter-spacing:.03em;text-transform:uppercase;color:#849787;font-weight:700;margin-bottom:5px}
+ .staff-table tbody td.staff-code{grid-column:1/-1}.staff-table tbody td:last-child{grid-column:1/-1}
+ .staff-row-actions{min-width:0}
+ .staff-table tbody td.staff-empty{grid-column:1/-1}.staff-empty::before{display:none!important}
+ .staff-dialog-actions .staff-btn{width:auto}.staff-footer-inner{padding:22px 16px;flex-direction:column;gap:7px;text-align:center}
+}
+
+.staff-pagination{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:20px;font-size:12px;color:#6d7d70}.staff-pagination a{border:1px solid #dce4d8;background:#fff;border-radius:10px;padding:9px 13px;color:#17452e;font-weight:600}.staff-pagination a:hover{background:#e9eee5}

@@ -1,0 +1,5 @@
+{% extends 'spa_admin/base.html' %}
+{% block admin_content %}
+<div class="adm-head"><div><div class="adm-eyebrow">TÀI KHOẢN & QUYỀN TRUY CẬP</div><h1>Nhân viên & phân quyền</h1><p>Nhân viên chỉ xem lịch hẹn; các chức năng thay đổi dữ liệu dành riêng cho chủ.</p></div><a class="adm-btn" href="/admin/auth/user/add/" target="_blank" rel="noopener">＋ Tạo tài khoản trong Django Admin</a></div>
+<div class="adm-staff-grid">{% for s in staff_users %}<article class="adm-panel adm-staff-card"><div class="adm-staff-icon">{{ s.username|slice:':1'|upper }}</div><div><h2>{{ s.get_full_name|default:s.username }}</h2><p>{{ s.username }}</p><div class="adm-divider"></div><div class="adm-staff-perm"><span>Xem toàn bộ lịch hẹn</span><i class="fa fa-check-circle"></i></div><div class="adm-staff-perm"><span>Chỉnh sửa / xác nhận lịch</span><i class="fa fa-lock"></i></div></div></article>{% empty %}<p class="adm-empty">Chưa có tài khoản nhân viên.</p>{% endfor %}</div>
+{% endblock admin_content %}

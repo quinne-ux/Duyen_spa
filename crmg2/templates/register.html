@@ -1,0 +1,159 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Đăng ký | Duyên Spa{% endblock title %}
+{% block body_class %}ds-inner-page ds-auth-page{% endblock body_class %}
+{% block legacy_css %}{% endblock legacy_css %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/duyen-auth.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+
+<section class="spa-auth">
+  <div class="spa-auth-card">
+
+    <div class="spa-auth-form">
+
+      <p class="spa-auth-kicker">
+        DUYÊN SPA · CHĂM SÓC DA & LÀM ĐẸP
+      </p>
+
+      <h1>Đăng ký</h1>
+      <p class="spa-auth-subtitle">Tạo tài khoản để đặt lịch và theo dõi lịch hẹn của bạn.</p>
+
+      <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+        <div class="spa-auth-alert" role="alert">
+          {{ form.non_field_errors }}
+        </div>
+        {% endif %}
+
+        {% for field in form %}
+
+          {% if field.is_hidden %}
+            {{ field }}
+          {% else %}
+
+          <div class="spa-auth-field">
+
+            <label for="{{ field.id_for_label }}">
+              {% if field.name == 'username' %}
+                Tên đăng nhập
+              {% elif field.name == 'password' or field.name == 'password1' %}
+                Mật khẩu
+              {% elif field.name == 'password2' %}
+                Nhập lại mật khẩu
+              {% elif field.name == 'first_name' %}
+                Họ
+              {% elif field.name == 'last_name' %}
+                Tên
+              {% else %}
+                {{ field.label }}
+              {% endif %}
+            </label>
+
+            {{ field }}
+
+            {% if field.errors %}
+            <div class="spa-auth-error" role="alert">
+              {{ field.errors }}
+            </div>
+            {% endif %}
+
+{% if field.help_text %}
+
+<div class="spa-auth-help">
+
+    {% if field.name == 'username' %}
+
+        Bắt buộc. Tối đa 150 ký tự.
+        Chỉ sử dụng chữ cái, số và các ký tự
+        @ . + - _
+
+    {% elif field.name == 'password1' %}
+
+        <ul>
+            <li>
+                Mật khẩu không được quá giống
+                với thông tin cá nhân của bạn.
+            </li>
+
+            <li>
+                Mật khẩu phải có ít nhất 8 ký tự.
+            </li>
+
+            <li>
+                Không sử dụng mật khẩu quá phổ biến
+                hoặc dễ đoán.
+            </li>
+
+            <li>
+                Mật khẩu không được chỉ bao gồm
+                các chữ số.
+            </li>
+        </ul>
+
+    {% elif field.name == 'password2' %}
+
+        Nhập lại chính xác mật khẩu ở trên
+        để xác nhận.
+
+    {% else %}
+
+        {{ field.help_text }}
+
+    {% endif %}
+
+</div>
+
+{% endif %}
+
+          </div>
+
+          {% endif %}
+        {% endfor %}
+
+        <button class="spa-auth-submit" type="submit">
+          Tạo tài khoản
+          <i class="fa fa-arrow-right" aria-hidden="true"></i>
+        </button>
+
+      </form>
+
+      <p class="spa-auth-switch">Đã có tài khoản? <a href="{% url 'login' %}">Đăng nhập</a></p>
+
+    </div>
+
+    <aside class="spa-auth-photo"
+      style="background-image:
+        linear-gradient(
+          0deg,
+          rgba(14,50,31,.68),
+          rgba(14,50,31,0) 65%
+        ),
+        url('{% static 'images/duyen-banner.jpg' %}');">
+
+      <div class="spa-auth-photo-content">
+        <span>DUYÊN SPA</span>
+
+        <h2>
+          Chăm sóc làn da,<br>
+          nâng niu vẻ đẹp tự nhiên.
+        </h2>
+
+        <p>
+          Không gian thư giãn dành riêng cho bạn.
+        </p>
+      </div>
+
+    </aside>
+
+  </div>
+</section>
+
+{% endblock content %}

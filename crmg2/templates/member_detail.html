@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Chi Tiết Hội Viên - {{ member.membership_card_id }}{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .detail-container {
+        padding-top: 100px;
+        padding-bottom: 50px;
+    }
+    .member-detail-card {
+        background: #fff;
+        padding: 40px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .header-red {
+        background-color: #c11325;
+        color: white;
+        padding: 10px 0;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 30px;
+        border-radius: 5px 5px 0 0;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    .form-control-static {
+        border: 1px solid #ccc;
+        padding: 8px;
+        width: 100%;
+        color: #222;
+        background-color: #f9f9f9;
+        border-radius: 4px;
+        font-family: 'Open Sans', sans-serif;
+    }
+    .btn-return {
+        background-color: #888;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+    }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="container detail-container">
+    <div class="member-detail-card">
+
+        <h2 class="header-red">Chi Tiết Hội Viên</h2>
+
+        <div class="form-group">
+            <label>Mã Hội viên:</label>
+            <div class="form-control-static">{{ member.membership_card_id }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Tên Khách hàng:</label>
+            <div class="form-control-static">{{ member.full_name }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Số điện thoại:</label>
+            <div class="form-control-static">{{ member.phone_number }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>CCCD:</label>
+            <div class="form-control-static">{{ member.cccd }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Gói tập đăng ký:</label>
+            <div class="form-control-static">{{ member.package.name|upper }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Ngày đăng ký:</label>
+            <div class="form-control-static">{{ member.registration_date|date:"d/m/Y" }}</div>
+        </div>
+
+        <div class="form-group">
+            <label>Ngày hết hạn:</label>
+            <div class="form-control-static">{{ member.end_date|date:"d/m/Y" }}</div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="{% url 'member_list_view' %}" class="btn-return">Quay lại Danh sách</a>
+        </div>
+
+    </div>
+</section>
+{% endblock content %}

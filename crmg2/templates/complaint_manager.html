@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Quản Lý Khiếu Nại - GYM-X CRM{% endblock title %}
+
+{% block extra_css %}
+<style>
+    .customer-dashboard { display: flex; padding-top: 100px; padding-bottom: 50px; }
+    .sidebar { flex: 0 0 250px; margin-right: 30px; background-color: #222222; padding: 0; height: fit-content; }
+    .sidebar a { display: block; padding: 15px 25px; text-decoration: none; color: #fff; font-weight: 500; border-bottom: 1px solid #333; transition: background-color 0.3s; text-transform: uppercase; font-size: 1.05rem; }
+    .content-area { flex-grow: 1; background-color: #ffffff; padding: 20px; border-radius: 8px; }
+    .manager-table { width: 100%; border-collapse: collapse; margin-top: 20px; text-align: left; }
+    .manager-table th, .manager-table td { padding: 12px 15px; border: 1px solid #eee; font-family: 'Open Sans', sans-serif; color: #000; }
+    .manager-table thead th { background-color: #c11325; color: white; text-transform: uppercase; font-weight: 600; font-size: 0.9rem; white-space: nowrap; }
+    .manager-table tr:nth-child(even) { background-color: #f7f7f7; }
+    .status-badge { display: inline-block; padding: 5px 10px; border-radius: 4px; color: white; font-size: 0.85rem; font-weight: 600; text-transform: capitalize; }
+    .status-RECEIVED { background-color: #4CAF50; }
+    .status-IN_PROGRESS { background-color: #FFC107; color: #333;}
+    .status-RESOLVED { background-color: #2196F3; }
+    .status-CANCELLED { background-color: #6c757d; }
+    .filter-section { background-color: #ffffff; padding: 0; margin-top: 20px; border-radius: 4px; margin-bottom: 20px; }
+    .filter-bar-group { display: flex; justify-content: center; align-items: center; margin-bottom: 15px; gap: 10px; }
+    .filter-bar-group input, .filter-bar-group select { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: 'Open Sans', sans-serif; }
+    .filter-bar-group button { padding: 8px 15px; background-color: #c11325; color: white; border: none; cursor: pointer; font-weight: 600; text-transform: uppercase; border-radius: 4px; }
+    .center-title { text-align: center; }
+</style>
+{% endblock extra_css %}
+
+{% block content %}
+<section class="container" style="padding-top: 100px; padding-bottom: 50px;">
+    <h1 class="text-center" style="font-size: 3rem; color: #c11325; font-weight: 700; margin-bottom: 30px;">QUẢN LÝ DANH SÁCH KHIẾU NẠI</h1>
+    <div class="content-area" style="background-color: #ffffff; padding: 0 20px 20px 20px;">
+        <form method="GET">
+            <div class="filter-section">
+                <div class="filter-bar-group">
+                    <input type="text" name="search" placeholder="Nhập mã khiếu nại" value="{{ search_query }}" style="width: 250px;">
+                    <button type="submit">Tìm kiếm</button>
+                </div>
+                <div class="filter-bar-group">
+                    <span style="margin-right: 10px;">Loại khiếu nại:</span>
+                    <select name="complaint_type">
+                        <option value="Tất cả" {% if selected_type == 'Tất cả' %}selected{% endif %}>Tất cả</option>
+                        {% for key, value in COMPLAINT_TYPE_CHOICES %}<option value="{{ key }}" {% if selected_type == key %}selected{% endif %}>{{ value }}</option>{% endfor %}
+                    </select>
+                    <span style="margin-left: 20px; margin-right: 10px;">Trạng thái:</span>
+                    <select name="status">
+                        <option value="Tất cả" {% if selected_status == 'Tất cả' %}selected{% endif %}>Tất cả</option>
+                        {% for key, value in STATUS_CHOICES %}<option value="{{ key }}" {% if selected_status == key %}selected{% endif %}>{{ value }}</option>{% endfor %}
+                    </select>
+                    <button type="submit">LỌC</button>
+                    <a href="{% url 'complaint_manager' %}" style="text-decoration: none; color: #c11325; padding: 8px; font-weight: 600;">Reset</a>
+                </div>
+            </div>
+        </form>
+        {% if complaints %}
+        <table class="manager-table">
+            <thead><tr><th>Mã KN</th><th>Loại khiếu nại</th><th>Trạng thái</th><th>Ngày xảy ra</th><th>Ngày tiếp nhận</th><th>NV phụ trách</th><th>Hành động</th></tr></thead>
+            <tbody>
+                {% for complaint in complaints %}
+                <tr>
+                    <td>{{ complaint.complaint_id }}</td>
+                    <td>{{ complaint.get_complaint_type_display }}</td>
+                    <td><span class="status-badge status-{{ complaint.status }}">{{ complaint.get_status_display }}</span></td>
+                    <td>{{ complaint.incident_date|date:"d/m/Y"|default:"N/A" }}</td>
+                    <td>{{ complaint.submitted_at|date:"d/m/Y" }}</td>
+                    <td>{{ complaint.responsible_staff.username|default:"Chưa có" }}</td>
+                    <td>
+                        <a href="{% url 'complaint_detail' complaint_id=complaint.complaint_id %}" class="btn btn-sm" style="background-color: black; color: white; margin-right: 5px;">Xem chi tiết</a>
+                        </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p style="margin-top: 20px; text-align: center;">Không có khiếu nại nào phù hợp với tiêu chí lọc.</p>
+        {% endif %}
+    </div>
+</section>
+{% endblock content %}
